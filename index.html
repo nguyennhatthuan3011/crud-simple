@@ -2,99 +2,34 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
+    <div id="post" class="header">
+        <h2 style="margin:5px">Users List</h2>
+        <input type="text" id="name" placeholder="Enter User's name" />
+        <input type="text" id="id" hidden/>
+        <span onclick="addPost()" class="addBtn" id="Add">Add</span>
+        <span onclick="savePost()" class="saveBtn" id="Edit">Save Edit</span>
+    </div>
+    <div class="list">
+        <table class="users">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+            <tbody id="posts">
 
-  <input type="text" id="id">
-  <input type="text" id="name">
-  <button type="submit" value="Add" onclick="addFunction()">Add</button>
-
-  <p></p>
-  <button id="" onclick="getFunction()">List</button>
-  <div id="showGet"></div>
-  <p></p>
-  <table>
-    <tr>
-      <th>Name</th>
-    </tr>
-    <tbody id="posts">
-
-    </tbody>
-  </table>
+            </tbody>
+        </table>
+    </div>
 </body>
-<script>
-
-  //POST
-  function addFunction() {
-    var id = document.getElementById("id").value;
-    var name = document.getElementById("name").value;
-    var data = { "id": id, "name": name }
-
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
-
-      .then(res => res.json())
-      .then(response => console.log('Success: ', JSON.stringify(response)))
-      .catch(error => console.error('Error:', error));
-  }
-
-  //GET
-
-  // function getFunction() {
-  //     var settings = {
-  //         "async": true,
-  //         "crossDomain": true,
-  //         "method": "GET",
-  //         "headers": {
-  //             "Content-Type": "application/json",
-  //         }
-  //     };
-  //     var a = fetch('http://localhost:3000/users', settings)
-  //     a.then(res => res.json())
-  //         .then(data => {
-  //             document.getElementById('showGet').innerText = JSON.stringify(data);
-  //             // console.log(data);
-  //         });
-  // }
-  function getFunction() {
-    console.log('chay di con');
-
-    let $el = document.getElementById('posts');
-
-    var settings = {
-      "async": true,
-      "crossDomain": true,
-      "method": "GET",
-      "headers": {
-        "Content-Type": "application/json",
-      }
-    };
-
-    fetch('http://localhost:3000/users', settings)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(response => {
-        if (response.length > 0) {
-          let template = '';
-          for (i = 0; i < response.length; i++) {
-            template += '<tr>';
-            template += '<td>' + response[i].name + '</td>';
-            template += '</tr>'
-          }
-          $el.innerHTML = template;
-        }
-      });
-  }
+<script src="script.js">
 </script>
+
 </html>
