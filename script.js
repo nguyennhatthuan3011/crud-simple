@@ -2,6 +2,7 @@
     showListPosts();
 })();
 
+
 // SHOW LIST USERS
 function showListPosts() {
     // Code of function show list post
@@ -16,6 +17,7 @@ function showListPosts() {
                     template += '<td>' + response[i].name + '</td>';
                     template += '<td class="colEdit"><button class="editBtn" onclick="editPost(' + response[i].id + ')">Edit</button></td>';
                     template += `<td class="colDel"><button id="delBtn" onclick="deletePost('${response[i].id}')">Delete</button></td>`;
+                    template += '<td class="colEdit"><button class="detailBtn" onclick="getTodos(' + response[i].id + ')">Detail</button></td>';
                     template += '</tr>'
                 }
                 $el.innerHTML = template;
@@ -84,6 +86,26 @@ deletePost = function(id) {
         .then(function() {
             showListPosts()
         });
+}
+
+// GET TODOS
+
+getTodos = function(id) {
+    let $el = document.getElementById("todos");
+    callApi('todos/' + id, 'GET')
+        .then(response => {
+            if (response) {
+                let template = '';
+                for (i = 0; i < response.length; i++) {
+                    template += '<tr>';
+                    template += '<td>' + response[i].id + '</td>';
+                    template += '<td>' + response[i].tittle + '</td>';
+                    template += '<td>' + response[i].completed + '</td>';
+                    template += '<tr>';
+                }
+                $el.innerHTML = template;
+            }
+        })
 }
 
 
