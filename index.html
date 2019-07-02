@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
-    
+    <div id="post" class="header">
+        <h2 style="margin:5px">Users List</h2>
+        <input type="text" id="name" placeholder="Enter User's name" />
+        <input type="text" id="id" hidden/>
+        <span onclick="addPost()" class="addBtn" id="Add">Add</span>
+        <span onclick="savePost()" class="saveBtn" id="Edit">Save Edit</span>
+    </div>
+    <div class="list">
+        <table class="users">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+            <tbody id="posts">
+
+            </tbody>
+        </table>
+    </div>
 </body>
+<script src="script.js">
+</script>
+
 </html>
