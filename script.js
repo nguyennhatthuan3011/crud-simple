@@ -91,19 +91,16 @@ deletePost = function(id) {
 // GET TODOS
 
 getTodos = function(id) {
-    let $el = document.getElementById("todos");
+    // let $el = document.getElementById("todos");
     callApi('todos/' + id, 'GET')
-        .then(response => {
-            if (response) {
-                let template = '';
-                for (i = 0; i < response.length; i++) {
-                    template += '<tr>';
-                    template += '<td>' + response[i].id + '</td>';
-                    template += '<td>' + response[i].tittle + '</td>';
-                    template += '<td>' + response[i].completed + '</td>';
-                    template += '<tr>';
-                }
-                $el.innerHTML = template;
+        .then(function(response) {
+            console.log(response)
+            var completed = response.completed
+                //console.log(completed)
+            if (completed == true) {
+                document.getElementById("user_task").innerHTML = "User with id: " + response.id + " has completed the job is " + response.title
+            } else {
+                document.getElementById("user_task").innerHTML = "User with id: " + response.id + " has not completed the job is " + response.title
             }
         })
 }
