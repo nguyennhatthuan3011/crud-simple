@@ -91,16 +91,56 @@ deletePost = function(id) {
 // GET TODOS
 
 getTodos = function(id) {
-    // let $el = document.getElementById("todos");
-    callApi('todos/' + id, 'GET')
+    let $el = document.getElementById("todos");
+    callApi('todos?userId=' + id, 'GET')
+        .then(function(response) {
+            if (response.length > 0) {
+                document.getElementById("task").style.display = 'block';
+                document.getElementById("no_user").style.display = 'none'
+                let template = '';
+                for (i = 0; i < response.length; i++) {
+                    template += '<tr>';
+                    template += '<td>' + response[i].title + '</td>';
+                    template += '<td>' + response[i].completed + '</td>';
+                    template += '</tr>'
+                }
+                $el.innerHTML = template;
+            } else {
+                document.getElementById("task").style.display = 'none'
+                document.getElementById("search_list").style.display = 'none'
+                document.getElementById("no_user").style.display = 'block'
+                document.getElementById("no_user").innerHTML = "User has no information"
+            }
+        })
+}
+
+
+// SEARCH POST
+searchPost = function() {
+
+    let $el = document.getElementById("detail_list")
+    var username = document.getElementById("find").value;
+
+    callApi('users?name=' + username, 'GET')
         .then(function(response) {
             console.log(response)
-            var completed = response.completed
-                //console.log(completed)
-            if (completed == true) {
-                document.getElementById("user_task").innerHTML = "User with id: " + response.id + " has completed the job is " + response.title
+            if (response.length > 0) {
+                document.getElementById("no_user").style.display = 'none'
+                document.getElementById("search_detail").style.display = 'block'
+                let template = '';
+                for (i = 0; i < response.length; i++) {
+                    template += '<tr>';
+                    template += '<td>' + response[i].id + '</td>';
+                    template += '<td>' + response[i].username + '</td>';
+                    template += '<td>' + response[i].email + '</td>';
+                    template += '</tr>'
+                }
+                $el.innerHTML = template;
             } else {
-                document.getElementById("user_task").innerHTML = "User with id: " + response.id + " has not completed the job is " + response.title
+                document.getElementById("todos_list").style.display = 'none'
+                document.getElementById("search_detail").style.display = 'none'
+                document.getElementById("no_search").style.display = 'block'
+                document.getElementById("no_search").style.display = "Can not find user"
             }
         })
 }

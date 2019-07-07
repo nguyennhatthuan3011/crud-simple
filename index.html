@@ -10,39 +10,72 @@
 </head>
 
 <body>
-    <div id="post" class="header">
-        <h2 style="margin:5px">Users List</h2>
-        <input type="text" id="name" placeholder="Enter User's name" />
-        <input type="text" id="id" hidden/>
-        <span onclick="addPost()" class="addBtn" id="Add">Add</span>
-        <span onclick="savePost()" class="saveBtn" id="Edit">Save Edit</span>
+    <div class="">
+        <div id="post" class="header">
+            <h2 style="margin:5px">Users List</h2>
+            <input type="text" id="name" placeholder="Enter User's name" />
+            <input type="text" id="id" hidden/>
+            <span onclick="addPost()" class="addBtn" id="Add">Add</span>
+            <span onclick="savePost()" class="saveBtn" id="Edit">Save Edit</span>
+        </div>
+        <div class="search">
+            <input type="text" id="find" />
+            <button onclick="searchPost()">Search</button>
+        </div>
     </div>
 
-    <div class="task">
-        <p id="user_task"></p>
-        <!-- <table class="user_task">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Completed</th>
-            </tr>
-            <tbody id="todos">
+    <!-- list users -->
 
-            </tbody>
-        </table> -->
+
+    <div>
+        <div class="list">
+            <table class="users">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+                <tbody id="posts">
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- detail todos     -->
+
+        <div class="todos_list" id="todos_list">
+            <p class="no_user" id="no_user"></p>
+            <div id="task" class="task">
+                <table class="user_task">
+                    <tr>
+                        <th>Title</th>
+                        <th>Completed</th>
+                    </tr>
+                    <tbody id="todos">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- search users -->
+
+        <div class="search_user">
+            <p class="no_search" id="no_search"></p>
+            <div class="search_detail" id="search_detail">
+                <table class="detail_list" id="search_list">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                    <tbody id="detail_list">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="list">
-        <table class="users">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-            <tbody id="posts">
-
-            </tbody>
-        </table>
-    </div>
 </body>
 <script src="script.js">
 </script>
