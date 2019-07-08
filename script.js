@@ -53,8 +53,8 @@ editPost = function(id) {
     callApi('users/' + id, 'GET')
         .then(function(response) {
             var name = response.name;
-            var id = response.id;
-            document.getElementById("id").value = id;
+            // var id = response.id;
+            // document.getElementById("id").value = id;
             document.getElementById("name").value = name;
         })
 }
@@ -110,7 +110,6 @@ getTodos = function(id) {
                 $el.innerHTML = template;
             } else {
                 document.getElementById("task").style.display = 'none'
-                document.getElementById("search_list").style.display = 'none'
                 document.getElementById("no_user").style.display = 'block'
                 document.getElementById("no_user").innerHTML = "User has no information"
             }
@@ -151,6 +150,39 @@ resetPost = function() {
     showListPosts();
 }
 
+
+function debounce(func, delay) {
+    var timeout;
+    return function() {
+        var context = this,
+            args = arguments;
+        var excuteFunction = function() {
+            func.apply(context, args);
+        };
+        console.log(timeout)
+        clearTimeout(timeout);
+        timeout = setTimeout(excuteFunction, delay);
+        console.log(timeout)
+    };
+};
+
+
+hint = debounce(function() {
+    let $el = document.getElementById("find")
+    var username = document.getElementById("find").value;
+
+    callApi('users?q=' + username, 'GET')
+        .then(function(response) {
+            if ($el.value) {
+                for (i = 0; i < response.length; i++) {
+                    var template = response[i].name
+                }
+                $el.value = template;
+            } else {
+                $el.value = ''
+            }
+        })
+}, 1500)
 
 function callApi(prefixUrl, method) {
 
