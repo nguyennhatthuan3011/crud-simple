@@ -19,20 +19,27 @@
             <span onclick="savePost()" class="saveBtn" id="Edit">Save Edit</span>
         </div>
         <div class="search">
-            <input type="text" id="find" />
-            <button onclick="searchPost()">Search</button>
+            <h2 style="margin:5px">Searh Users</h2>
+            <input type="text" id="find" placeholder="Name of user" />
+            <span onclick="searchPost()" class="searchBtn" id="Search">Search</span>
+            <!-- <button onclick="searchPost()">Search</button> -->
         </div>
     </div>
+
 
     <!-- list users -->
 
 
     <div>
+        <div class="reset">
+            <span onclick="resetPost()" class="resetBtn" id="reset">Reset</span>
+        </div>
         <div class="list">
             <table class="users">
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th colspan="3">Option</th>
                 </tr>
                 <tbody id="posts">
 
@@ -58,7 +65,7 @@
         </div>
 
         <!-- search users -->
-
+        <!-- 
         <div class="search_user">
             <p class="no_search" id="no_search"></p>
             <div class="search_detail" id="search_detail">
@@ -72,8 +79,8 @@
 
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </div> -->
+    </div>
     </div>
 
 </body>

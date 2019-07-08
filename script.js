@@ -95,8 +95,11 @@ getTodos = function(id) {
     callApi('todos?userId=' + id, 'GET')
         .then(function(response) {
             if (response.length > 0) {
+                // document.getElementById("no_user").style.display = 'none';
+                // document.getElementById("search_user").style.display = 'none';
+                document.getElementById("todos_list").style.display = 'block';
                 document.getElementById("task").style.display = 'block';
-                document.getElementById("no_user").style.display = 'none'
+                document.getElementById("no_user").style.display = 'none';
                 let template = '';
                 for (i = 0; i < response.length; i++) {
                     template += '<tr>';
@@ -118,31 +121,34 @@ getTodos = function(id) {
 // SEARCH POST
 searchPost = function() {
 
-    let $el = document.getElementById("detail_list")
+    let $el = document.getElementById("posts")
     var username = document.getElementById("find").value;
 
     callApi('users?name=' + username, 'GET')
         .then(function(response) {
             console.log(response)
             if (response.length > 0) {
-                document.getElementById("no_user").style.display = 'none'
-                document.getElementById("search_detail").style.display = 'block'
+                document.getElementById("todos_list").style.display = 'none'
                 let template = '';
                 for (i = 0; i < response.length; i++) {
                     template += '<tr>';
                     template += '<td>' + response[i].id + '</td>';
-                    template += '<td>' + response[i].username + '</td>';
-                    template += '<td>' + response[i].email + '</td>';
+                    template += '<td>' + response[i].name + '</td>';
+                    template += '<td class="colEdit"><button class="editBtn" onclick="editPost(' + response[i].id + ')">Edit</button></td>';
+                    template += `<td class="colDel"><button id="delBtn" onclick="deletePost('${response[i].id}')">Delete</button></td>`;
+                    template += '<td class="colEdit"><button class="detailBtn" onclick="getTodos(' + response[i].id + ')">Detail</button></td>';
                     template += '</tr>'
                 }
                 $el.innerHTML = template;
-            } else {
-                document.getElementById("todos_list").style.display = 'none'
-                document.getElementById("search_detail").style.display = 'none'
-                document.getElementById("no_search").style.display = 'block'
-                document.getElementById("no_search").style.display = "Can not find user"
             }
         })
+}
+
+// RESET POST
+
+resetPost = function() {
+    document.getElementById("todos_list").style.display = 'none'
+    showListPosts();
 }
 
 

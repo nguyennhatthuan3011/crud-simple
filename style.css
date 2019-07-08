@@ -4,7 +4,7 @@
         background-color: #f44336;
         float: left;
         left: 50%;
-        width: 50%;
+        width: 47%;
         padding: 30px 40px;
         color: white;
         text-align: center;
@@ -66,6 +66,54 @@
     
     .saveBtn {
         display: none;
+    }
+    /* search users */
+    
+    .search {
+        background-color: #4CAF50;
+        float: left;
+        left: 50%;
+        width: 40%;
+        /* height: 75px; */
+        padding: 30px 40px;
+        color: white;
+        text-align: center;
+    }
+    /* search button */
+    
+    .searchBtn {
+        padding: 10px;
+        width: 20%;
+        background: #d9d9d9;
+        color: #555;
+        float: left;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
+    }
+    
+    .searchBtn:hover {
+        background-color: #bbb;
+    }
+    /* reset button */
+    
+    .resetBtn {
+        margin: 10px;
+        padding: 10px;
+        width: 20%;
+        background: #d9d9d9;
+        color: #555;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
+    }
+    
+    .resetBtn:hover {
+        background-color: #bbb;
     }
     /* table list  */
     
@@ -156,7 +204,7 @@
         display: block
     }
     /* table detail_list */
-    
+    /*     
     .detail_list {
         border-collapse: collapse;
         border-spacing: 0;
@@ -202,4 +250,4 @@
     
     .no_search {
         display: none;
-    }
+    } */
