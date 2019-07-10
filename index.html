@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.13/lodash.min.js"></script>
     <script src="http.js"></script>
+    <script src="render.js"></script>
     <script src="scripts.js"></script>
 </head>
 
@@ -29,7 +31,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
-                <form autocomplete="off" class="form">
+                <form autocomplete="off" class="form" id="form">
                     <div class="form-group">
                         <input type="text" id="find" onkeyup="hint()" class="form-control" placeholder="Search by name">
                     </div>
@@ -41,7 +43,9 @@
                 </form>
             </div>
             <div class="col-sm-6">
-                <h3>User List</h3>
+                <div>
+                    <h3 class="titleList">Users List</h3>
+                </div>
                 <button type="button" class="btn btn-primary btn-xs pull-right create-user" data-toggle="modal" data-target="#createuserModal">Create User</button>
                 <div class="modal fade" id="createuserModal" role="dialog">
                     <div class="modal-dialog">
@@ -53,32 +57,33 @@
                                 <h4 class="modal-title">Create User</h4>
                             </div>
                             <div class="modal-body">
-                                <form action="" id="createUserForm">
+                                <form action="" name="createUserForm" id="createUserForm">
                                     <div class="form-group">
                                         <label for="name">Name:</label>
-                                        <input type="text" class="form-control" id="name">
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name">
                                     </div>
                                     <div class="form-group">
                                         <label for="username">Username:</label>
-                                        <input type="text" class="form-control" id="username">
+                                        <input type="text" class="form-control" name="username" id="username" placeholder="Username">
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email:</label>
-                                        <input type="email" class="form-control" id="email">
+                                        <input type="email" class="form-control" name="email" id="email" placeholder="email@gmail.com">
                                     </div>
                                     <div class="form-group">
                                         <label for="phone">Phone:</label>
-                                        <input type="text" class="form-control" id="phone">
+                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="092826xxxx">
                                     </div>
                                     <div class="form-group">
                                         <label for="website">Website:</label>
-                                        <input type="text" class="form-control" id="website">
+                                        <input type="text" class="form-control" name="website" id="website" placeholder="Your Website">
                                     </div>
                                 </form>
 
                             </div>
                             <div class="modal-footer">
-                                <button onclick="addPost()" class="btn btn-primary" data-dismiss="modal">Create</button>
+                                <button onclick="addPost()" class="btn btn-primary">Create</button>
+                                <button onclick="cancelAdd()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
 
@@ -86,7 +91,10 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                <h3 class="">Todos List</h3>
+                <div>
+                    <h3 class="titleList">Todos List User </h3>
+                    <h3 class="titleList" id="titleTodosList"></h3>
+                </div>
                 <button type="button" class="btn btn-primary btn-xs pull-right create-user" data-toggle="modal" data-target="#createtodoModal">Create Todo</button>
                 <div class="modal fade" id="createtodoModal" role="dialog">
                     <div class="modal-dialog">
@@ -98,14 +106,14 @@
                                 <h4 class="modal-title">Create Todos</h4>
                             </div>
                             <div class="modal-body">
-                                <form action="" id="createTodosForm">
+                                <form action="" name="createTodosForm" id="createTodosForm">
                                     <div class="form-group">
                                         <label for="userId">userId:</label>
-                                        <input type="text" class="form-control" id="userId">
+                                        <input type="text" name="userId" class="form-control" id="userId">
                                     </div>
                                     <div class="form-group">
                                         <label for="title">Title:</label>
-                                        <input type="text" class="form-control" id="title">
+                                        <input type="text" name="title" class="form-control" id="title">
                                     </div>
                                     <div class="radio">
                                         <label for="Completed">Completed:</label><br>
@@ -118,7 +126,8 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" onclick="createTodos()" data-dismiss="modal">Create</button>
+                                <button type="submit" class="btn btn-primary" onclick="createTodos()">Create</button>
+                                <button onclick="cancelAddTodos()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
 
@@ -159,39 +168,35 @@
                                     <h4 class="modal-title">Edit User</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="">
-                                        <div class="form-group">
-                                            <label for="id">ID:</label>
-                                            <input type="text" class="form-control" id="editId" disabled>
-                                        </div>
+                                    <form action="" name="editUserForm">
                                         <div class="form-group">
                                             <label for="name">Name:</label>
-                                            <input type="text" class="form-control" id="editName">
+                                            <input type="text" name="editName" class="form-control" id="editName">
                                         </div>
                                         <div class="form-group">
                                             <label for="username">Username:</label>
-                                            <input type="text" class="form-control" id="editUsername">
+                                            <input type="text" name="editUsername" class="form-control" id="editUsername">
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Email:</label>
-                                            <input type="email" class="form-control" id="editEmail">
+                                            <input type="email" name="editEmail" class="form-control" id="editEmail">
                                         </div>
                                         <div class="form-group">
                                             <label for="phone">Phone:</label>
-                                            <input type="text" class="form-control" id="editPhone">
+                                            <input type="text" name="editPhone" class="form-control" id="editPhone">
                                         </div>
                                         <div class="form-group">
                                             <label for="website">Website:</label>
-                                            <input type="text" class="form-control" id="editWebsite">
+                                            <input type="text" name="editWebsite" class="form-control" id="editWebsite">
                                         </div>
                                     </form>
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button onclick="savePost()" class="btn btn-primary" data-dismiss="modal">Edit</button>
+                                    <button onclick="savePost()" class="btn btn-primary">Edit</button>
+                                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -221,14 +226,14 @@
                                     <h4 class="modal-title">Eidt Todos</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="" id="edittodoModal">
+                                    <form action="" name="edittodoModal" id="edittodoModal">
                                         <div class="form-group">
                                             <label for="userId">userId:</label>
-                                            <input type="text" class="form-control" id="editUserId" disabled>
+                                            <input type="text" name="editUserId" class="form-control" id="editUserId" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="title">Title:</label>
-                                            <input type="text" class="form-control" id="editTitle">
+                                            <input type="text" name="editTitle" class="form-control" id="editTitle">
                                         </div>
                                         <div class="radio">
                                             <label for="Completed">Completed:</label><br>
@@ -241,7 +246,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" onclick="saveTodos()" data-dismiss="modal">Edit</button>
+                                    <button type="submit" class="btn btn-primary" onclick="saveTodos()">Edit</button>
+                                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
 
