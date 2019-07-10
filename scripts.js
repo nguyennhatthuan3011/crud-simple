@@ -1,18 +1,35 @@
+document.onreadystatechange = function() {
+    if (document.readyState === 'complete') {
+        initApplication();
+    }
+};
+
+
+function initApplication() {
+    const defaultUserId = 1;
+    showListPosts();
+    getTodos(defaultUserId);
+}
+
+
+
 var usrId = 1;
 
 var todosId = '';
 
-(function() {
-    showListPosts();
-    getTodos(usrId);
+// (function() {
+//     showListPosts();
+//     getTodos(usrId);
 
-})();
+// })();
 
 // SHOW LIST USERS
 function showListPosts() {
     // Code of function show list post
 
-    callApi('users', 'GET')
+    const $el = document.getElementById('posts');
+
+    return callApi('users', 'GET')
         .then(function(response) {
             if (response.length > 0) {
                 let template = '';
@@ -27,13 +44,17 @@ function showListPosts() {
                     template += '<td class="colEdit"><button class="btn btn-warning" onclick="editPost(' + response[i].id + ')" data-toggle="modal" data-target="#edituserModal">Edit</button></td>';
                     template += `<td class="colDel"><button class="btn btn-danger" onclick="deletePost('${response[i].id}')">Delete</button></td>`;
                     template += '<td class="colEdit"><button class="btn btn-success" onclick="getTodos(' + response[i].id + ')">Detail</button></td>';
-                    template += '</tr>'
+                    template += '</tr>';
                 }
-                let $el = document.getElementById('posts');
                 // console.log($el)
+
                 $el.innerHTML = template;
             } else {
-                $el.innerHTML = '';
+                $el.innerHTML = `
+                <tr>
+                    <td colspan="7"> Data not found </td>
+                </tr>
+                `;
             }
         })
 }
@@ -48,7 +69,7 @@ addPost = function() {
     var website = document.getElementById("website").value;
     var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
 
-    callApiPost('users', 'POST', data)
+    callApi('users', 'POST', data)
         // .then(response => console.log('Success: ', JSON.stringify(response)))
         // .catch(error => console.error('Error:', error));
         .then(function(response) {
@@ -64,41 +85,33 @@ editPost = function(id) {
     // Code of function edit post
     callApi('users/' + id, 'GET')
         .then(function(response) {
-            var id = response.id;
-            var name = response.name;
-            var username = response.username;
-            var email = response.email;
-            var phone = response.phone;
-            var website = response.website;
-            document.getElementById("editId").value = id;
-            document.getElementById("editName").value = name;
-            document.getElementById("editUsername").value = username;
-            document.getElementById("editEmail").value = email;
-            document.getElementById("editPhone").value = phone;
-            document.getElementById("editWebsite").value = website;
-        })
+            document.getElementById("editId").value = response.id;
+            document.getElementById("editName").value = response.name;
+            document.getElementById("editUsername").value = response.username;
+            document.getElementById("editEmail").value = response.email;
+            document.getElementById("editPhone").value = response.phone;
+            document.getElementById("editWebsite").value = response.website;
+        });
 }
 
 // SAVE EDIT POST
 
 savePost = function() {
-
-    var id = document.getElementById("editId").value;
     var editName = document.getElementById("editName").value;
     var editUsername = document.getElementById("editUsername").value;
     var editEmail = document.getElementById("editEmail").value;
     var editPhone = document.getElementById("editPhone").value;
     var editWebsite = document.getElementById("editWebsite").value;
-    var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite }
+    var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
 
 
-    callApiPost('users/' + id, 'PUT', data)
-        .then(function(response) {
-            showListPosts()
-            alert("Edit Success")
-        })
-}
+    callApi('users/' + id, 'PUT', data)
+        .then(function(_) {
+            showListPosts();
+            alert("Edit Success");
+        });
+};
 
 
 //DELETE USERS
@@ -106,7 +119,7 @@ deletePost = function(id) {
         // Code of function delete post
         callApi('users/' + id, 'DELETE')
             .then(function() {
-                showListPosts()
+                showListPosts();
             });
     }
     // GET TODOS
@@ -123,7 +136,7 @@ function getTodos(id) {
                     template += '<td>' + response[i].completed + '</td>';
                     template += '<td class="colEdit"><button class="btn btn-warning" onclick="editTodos(' + response[i].id + ')" data-toggle="modal" data-target="#edittodoModal">Edit</button></td>';
                     template += `<td class="colDel"><button class="btn btn-danger" onclick="deleteTodos('${response[i].id}')">Delete</button></td>`;
-                    template += '</tr>'
+                    template += '</tr>';
                 }
 
                 let $el = document.getElementById("todos");
@@ -131,9 +144,9 @@ function getTodos(id) {
 
             } else {
                 let template = '';
-                template += '<tr>'
-                template += '<td colspan="4">' + 'User has no information' + '</td>'
-                template += '<tr>'
+                template += '<tr>';
+                template += '<td colspan="4">' + 'User has no information' + '</td>';
+                template += '<tr>';
 
                 let $el = document.getElementById("todos");
                 $el.innerHTML = template;
@@ -160,7 +173,7 @@ createTodos = function() {
         "completed": completed
     }
 
-    callApiPost('todos', 'POST', data)
+    callApi('todos', 'POST', data)
         .then(function(response) {
             getTodos(userId);
             alert("Success")
@@ -221,7 +234,7 @@ saveTodos = function() {
         .then(function(response) {
             getTodos(usrId);
             alert("Edit Success!")
-        })
+        });
 }
 
 // // SEARCH POST
@@ -251,96 +264,11 @@ searchPost = function() {
                 $el.innerHTML = template;
             }
         })
-}
-
+};
 
 
 // RESET POST
 
 resetPost = function() {
     showListPosts();
-}
-
-
-// function debounce(func, delay) {
-//     var timeout;
-//     return function() {
-//         var context = this,
-//             args = arguments;
-//         var excuteFunction = function() {
-//             func.apply(context, args);
-//         };
-//         console.log(timeout)
-//         clearTimeout(timeout);
-//         timeout = setTimeout(excuteFunction, delay);
-//         console.log(timeout)
-//     };
-// };
-
-
-// hint = debounce(function() {
-//     let $el = document.getElementById("find")
-//     var username = document.getElementById("find").value;
-
-//     callApi('users?q=' + username, 'GET')
-//         .then(function(response) {
-//             if ($el.value) {
-//                 for (i = 0; i < response.length; i++) {
-//                     var template = response[i].name
-//                 }
-//                 $el.value = template;
-//             } else {
-//                 $el.value = ''
-//             }
-//         })
-// }, 1000)
-
-
-function callApi(prefixUrl, method) {
-
-    var baseUrl = 'http://localhost:3000';
-
-    var settings = {
-        async: true,
-        crossDomain: true,
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-        }
-    };
-
-    var response = fetch(`${baseUrl}/${prefixUrl}`, settings)
-        .then(function(response) {
-            return response.json();
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-
-    return response;
-}
-
-function callApiPost(prefixUrl, method, data) {
-
-    var baseUrl = 'http://localhost:3000';
-
-    var settings = {
-        async: true,
-        crossDomain: true,
-        method: method,
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-        }
-    };
-
-    var response = fetch(`${baseUrl}/${prefixUrl}`, settings)
-        .then(function(response) {
-            return response.json();
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-
-    return response;
 }

@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.13/lodash.min.js"></script>
+    <script src="http.js"></script>
     <script src="scripts.js"></script>
 </head>
 
@@ -24,15 +26,18 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="row">
-                <form autocomplete="off" class="navbar-form navbar-left">
+            <div class="col-sm-12">
+                <form autocomplete="off" class="form">
                     <div class="form-group">
                         <input type="text" id="find" onkeyup="hint()" class="form-control" placeholder="Search by name">
                     </div>
-                    <button type="button" onclick="searchPost()" class="btn btn-default">Search</button>
-                    <button type="button" onclick="resetPost()" class="btn btn-success">Reset</button>
+
+                    <div class="pull-right">
+                        <button type="button" onclick="searchPost()" class="btn btn-default">Search</button>
+                        <button type="button" onclick="resetPost()" class="btn btn-success">Reset</button>
+                    </div>
                 </form>
             </div>
             <div class="col-sm-6">
