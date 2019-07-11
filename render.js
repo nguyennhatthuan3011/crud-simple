@@ -52,3 +52,22 @@ var renderListTodos = function(data, element) {
     element.innerHTML = template;
 
 };
+
+var renderNumPage = function(data, element) {
+    "use strict"
+    var template = "";
+    if (data.length === 0) {
+        template = "";
+    }
+
+    var numPage = data.length / 5;
+
+    for (var i = 1; i <= numPage; i++) {
+        console.log(i);
+        template += '<li>'
+        template += '<a onclick="getList(' + i + ')" href="#">' + i + '</a>'
+        template += '</li>'
+    }
+
+    element.innerHTML = template;
+}

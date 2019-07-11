@@ -33,7 +33,7 @@
             <div class="col-sm-12">
                 <form autocomplete="off" class="form" id="form">
                     <div class="form-group">
-                        <input type="text" id="find" onkeyup="hint()" class="form-control" placeholder="Search by name">
+                        <input type="text" id="find" class="form-control" placeholder="Search by name">
                     </div>
 
                     <div class="pull-right">
@@ -136,9 +136,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-6" id="userlist">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" id="table" name="table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -154,6 +154,12 @@
 
                         </tbody>
                     </table>
+                    <div>
+                        <ul id="pageUser" class="pagination pagination-sm">
+                        </ul>
+                    </div>
+
+
                     <!-- modal edit -->
 
 
@@ -238,8 +244,10 @@
                                         <div class="radio">
                                             <label for="Completed">Completed:</label><br>
                                             <div class="radio">
-                                                <label><input type="radio" name="editCompleted" value="false">false</label>
-                                                <label><input type="radio" name="editCompleted" value="true">true</label>
+                                                <label><input type="radio" name="editCompleted"
+                                                        value="false">false</label>
+                                                <label><input type="radio" name="editCompleted"
+                                                        value="true">true</label>
                                             </div>
                                         </div>
                                     </form>

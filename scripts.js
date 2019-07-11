@@ -4,14 +4,20 @@ document.onreadystatechange = function() {
     }
 };
 
+
+var userId = 1;
 var defaultUserId = 1;
 var headUserId = 0;
 var todosId = '';
+var num = 1;
+
 
 function initApplication() {
     // const defaultUserId = 1;
-    showListPosts();
+    // showListPosts();
     getTodos(defaultUserId);
+    numPage();
+    getList(1);
 }
 
 
@@ -55,9 +61,10 @@ addPost = function() {
 
         callApi('users', 'GET')
             .then(function(response) {
-                var filterUsernam = _.filter(response, ['username', username]);
-                var filterEmail = _.filter(response, ['email', editEmail]);
-                if (filterUsernam.length === 0) {
+                var filterCreate = _.filter(response, function(object) {
+                    return object.username === username || object.email === email;
+                });
+                if (filterCreate.length === 0) {
                     var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
                     callApi('users', 'POST', data)
                         .then(function(response) {
@@ -68,6 +75,9 @@ addPost = function() {
                         })
                         .then(function(_) {
                             return showListPosts();
+                        })
+                        .then(function(_) {
+                            return numPage();
                         })
                     $('#createuserModal').modal('hide')
                 } else {
@@ -120,15 +130,17 @@ savePost = function() {
         var editPhone = document.getElementById("editPhone").value;
         var editWebsite = document.getElementById("editWebsite").value;
 
-
         // FILTER USERNAME AND EMAIL
-
 
         callApi('users', 'GET')
             .then(function(response) {
-                var filterUsernam = _.filter(response, ['username', editUsername]);
-                var filterEmail = _.filter(response, ['email', editEmail]);
-                if (filterUsernam.length === 0) {
+                _.remove(response, ['id', defaultUserId]);
+                // var filterEditUsername = _.filter(response, ['username', editUsername]);
+                var filterEdit = _.filter(response, function(object) {
+                    return object.username === editUsername || object.email === editEmail;
+                });
+                // var filterEditEmail = _.filter(response, ['email', editEmail]);
+                if (filterEdit.length === 0) {
                     var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
                     callApi('users/' + defaultUserId, 'PUT', data)
@@ -156,6 +168,9 @@ deletePost = function(id) {
             })
             .then(() => {
                 getTodos(headUserId);
+            })
+            .then(() => {
+                return numPage();
             });
     }
     // GET TODOS
@@ -187,7 +202,7 @@ createTodos = function() {
         var radio = document.getElementsByName("completed");
         for (i = 0; i < radio.length; i++) {
             if (radio[i].checked) {
-                var completed = radio[i].value
+                var completed = JSON.parse(radio[i].value);
             }
         }
 
@@ -243,7 +258,7 @@ deleteTodos = function(id) {
 // EDIT TODOS
 
 editTodos = function(id) {
-    todosId = id
+    todosId = id;
     callApi('todos/' + id, 'GET')
         .then(function(response) {
             document.getElementById("editUserId").value = response.userId;
@@ -277,6 +292,7 @@ saveTodos = function() {
 
         callApi('todos?userId=' + editUserId, 'GET')
             .then(function(response) {
+                _.remove(response, ['id', todosId])
                 var filterTitle = _.filter(response, ['title', editTitle]);
                 if (filterTitle.length === 0) {
                     var data = {
@@ -334,4 +350,22 @@ searchPost = function() {
 
 resetPost = function() {
     showListPosts();
+}
+
+
+function numPage() {
+    const $el = document.getElementById("pageUser")
+    callApi('users', 'GET')
+        .then(function(response) {
+            renderNumPage(response, $el)
+        })
+}
+
+function getList(pageNum) {
+    const $el = document.getElementById("posts");
+    callApi('users' + '?_page=' + pageNum + '&_limit=' + 5, 'GET')
+        .then(function(response) {
+            console.log(response);
+            renderListPost(response, $el);
+        })
 }
