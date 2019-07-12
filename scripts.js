@@ -7,9 +7,12 @@ document.onreadystatechange = function() {
 
 var userId = 1;
 var defaultUserId = 1;
-var headUserId = 0;
+var headUserId = '';
+var headTodosId = '';
 var todosId = '';
 var num = 1;
+var numberTodos = 1;
+var todosNum = '';
 
 
 function initApplication() {
@@ -17,7 +20,7 @@ function initApplication() {
     // showListPosts();
     getTodos(defaultUserId);
     numPage();
-    getList(1);
+    getList();
 }
 
 
@@ -28,18 +31,56 @@ function initApplication() {
 // })();
 
 // SHOW LIST USERS
-function showListPosts() {
-    // Code of function show list post
 
-    const $el = document.getElementById('posts');
 
-    return callApi('users', 'GET')
+// function showListPosts() {
+//     // Code of function show list post
+
+//     const $el = document.getElementById('posts');
+
+//     return callApi('users', 'GET')
+//         .then(function(response) {
+//             renderListPost(response, $el);
+//             // defaultUserId = headIdUser;
+//         });
+// };
+
+
+// USERS
+
+
+
+// CREATE NUMPAGE USER
+
+function numPage() {
+    const $el = document.getElementById("pageUser")
+    callApi('users', 'GET')
         .then(function(response) {
-            renderListPost(response, $el);
-            // defaultUserId = headIdUser;
-        });
-};
+            renderNumPage(response, $el)
+        })
+}
 
+// GET USER IN PAGE
+
+function getList(pageNum) {
+    var ulUser = document.getElementById("pageUser");
+    var liUser = ulUser.getElementsByClassName("numUser");
+    for (i = 0; i < liUser.length; i++) {
+        liUser[i].addEventListener("click", function() {
+            var a = ulUser.getElementsByClassName("active");
+            if (a.length > 0) {
+                a[0].className = a[0].className.replace("active", "");
+            }
+            this.className += " active";
+        });
+    }
+
+    const $el = document.getElementById("posts");
+    return callApi('users' + '?_page=' + pageNum + '&_limit=' + 5, 'GET')
+        .then(function(response) {
+            return renderListPost(response, $el);
+        })
+}
 
 // CREATE USER
 addPost = function() {
@@ -68,16 +109,18 @@ addPost = function() {
                     var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
                     callApi('users', 'POST', data)
                         .then(function(response) {
+
+                            if ((response.id % 5) != 0) {
+                                var num = (response.id / 5) + 1;
+                            } else {
+                                var num = response.id / 5;
+                            }
+                            numPage();
+                            return getList(num);
+                        })
+                        .then(function(_) {
                             document.getElementById("createUserForm").reset();
-                        })
-                        .then(function(_) {
                             alert("Add User Success");
-                        })
-                        .then(function(_) {
-                            return showListPosts();
-                        })
-                        .then(function(_) {
-                            return numPage();
                         })
                     $('#createuserModal').modal('hide')
                 } else {
@@ -87,8 +130,6 @@ addPost = function() {
             })
     }
 }
-
-
 
 
 // CANCEL CREATE USERS
@@ -135,17 +176,24 @@ savePost = function() {
         callApi('users', 'GET')
             .then(function(response) {
                 _.remove(response, ['id', defaultUserId]);
-                // var filterEditUsername = _.filter(response, ['username', editUsername]);
                 var filterEdit = _.filter(response, function(object) {
                     return object.username === editUsername || object.email === editEmail;
                 });
-                // var filterEditEmail = _.filter(response, ['email', editEmail]);
                 if (filterEdit.length === 0) {
                     var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
                     callApi('users/' + defaultUserId, 'PUT', data)
+                        .then(function(response) {
+                            // showListPosts();
+                            if ((response.id % 5) != 0) {
+                                var num = (response.id / 5) + 1;
+                            } else {
+                                var num = response.id / 5;
+                            }
+                            numPage();
+                            return getList(num);
+                        })
                         .then(function(_) {
-                            showListPosts();
                             alert("Edit Success");
                         });
                     $('#edituserModal').modal('hide')
@@ -159,32 +207,80 @@ savePost = function() {
 
 //DELETE USERS
 deletePost = function(id) {
-        // Code of function delete post
-        callApi('users/' + id, 'DELETE')
-            .then(function(response) {
-                console.log(response);
-                return showListPosts();
-                // getTodos(headUserId);
-            })
-            .then(() => {
-                getTodos(headUserId);
-            })
-            .then(() => {
-                return numPage();
-            });
-    }
-    // GET TODOS
+    callApi('users/' + id, 'DELETE')
+        .then(function(_) {
+            return getList();
+        })
+        .then(function(_) {
+            return getTodos(headUserId);
+        })
+        .then(function(_) {
+            return numPage();
+        })
+        .then(function(_) {
+            alert('Delete Success!');
+        })
+}
+
+
+// TODOS
+
+
+// GET NUMPAGE TODOS
+
+function numPageTodos(numPageTodos) {
+    const $el = document.getElementById("pageTodos")
+    return callApi('todos?userId=' + numPageTodos, 'GET')
+        .then(function(response) {
+            return renderNumPageTodos(response, $el);
+        });
+}
+
+// GET TODOS
 
 function getTodos(id) {
     defaultUserId = id
     const $el = document.getElementById("todos");
-    callApi('todos?userId=' + id, 'GET')
+    callApi('todos' + '?userId=' + id + '&_page=' + 1 + '&_limit=' + 4, 'GET')
         .then(function(response) {
-            renderListTodos(response, $el)
-        });
+            return renderListTodos(response, $el)
+        })
+        .then(function(_) {
+            return numPageTodos(id);
+        })
     document.getElementById("titleTodosList").innerHTML = defaultUserId;
+
 }
 
+
+
+// GET TODOS IN PAGE
+function getListTodos(numTodos) {
+    var ulTodo = document.getElementById("pageTodos");
+    var liTodo = ulTodo.getElementsByClassName("numTodo");
+    for (i = 0; i < liTodo.length; i++) {
+        liTodo[i].addEventListener("click", function() {
+            var a = ulTodo.getElementsByClassName("active");
+            if (a.length > 0) {
+                a[0].className = a[0].className.replace("active", "");
+            }
+            this.className += " active";
+        });
+    }
+    todosNum = numTodos;
+    // console.log(defaultUserId);
+    const $el = document.getElementById("todos");
+    return callApi('todos' + '?userId=' + defaultUserId + '&_page=' + numTodos + '&_limit=' + 4, 'GET')
+        .then(function(response) {
+            // console.log(response);
+            return renderListTodos(response, $el)
+        })
+        // .then(function(_) {
+        //     // console.log(defaultUserId);
+        //     return numPageTodos(defaultUserId);
+        // })
+    document.getElementById("titleTodosList").innerHTML = defaultUserId;
+}
 
 // CREATE TODOS
 
@@ -220,8 +316,25 @@ createTodos = function() {
 
                     callApi('todos', 'POST', data)
                         .then(function(response) {
-                            getTodos(userId);
+                            return callApi('todos?userId=' + userId, 'GET')
+                                .then(function(response) {
+                                    defaultUserId = userId;
+                                    // console.log(response);
+                                    if ((response.length % 4) != 0) {
+                                        var numberTodos = (response.length / 4) + 1;
+                                    } else {
+                                        var numberTodos = response.length / 4;
+                                    }
+                                    return getListTodos(numberTodos);
+                                });
+                        })
+                        .then(function(response) {
+                            // getTodos(userId);
                             document.getElementById("createTodosForm").reset();
+                        })
+                        .then(function(_) {
+                            // console.log(defaultUserId);
+                            return numPageTodos(defaultUserId);
                         })
                         .then(function() {
                             alert("Create Todos Success");
@@ -247,11 +360,16 @@ deleteTodos = function(id) {
 
     // Code of function delete todos
     callApi('todos/' + id, 'DELETE')
+        .then(function(_) {
+            // console.log(defaultUserId);
+            return numPageTodos(defaultUserId);
+        })
         .then(function() {
             var userid = document.getElementById("userTodos").value;
             alert("Delete Success!")
-            getTodos(defaultUserId);
+            getListTodos(todosNum);
         });
+
 
 }
 
@@ -303,7 +421,11 @@ saveTodos = function() {
 
                     callApi('todos/' + todosId, 'PUT', data)
                         .then(function(response) {
-                            getTodos(defaultUserId);
+                            return getListTodos(todosNum);
+                        })
+                        .then(function(response) {
+                            // console.log(response);
+                            // getTodos(defaultUserId);
                             alert("Edit Success!")
                         });
                     $('#edittodoModal').modal('hide')
@@ -324,7 +446,7 @@ searchPost = function() {
     document.getElementById("form").reset();
     callApi('users?name=' + username, 'GET')
         .then(function(response) {
-            console.log(response)
+            // console.log(response)
             if (response.length > 0) {
                 let template = '';
                 for (i = 0; i < response.length; i++) {
@@ -349,23 +471,5 @@ searchPost = function() {
 // RESET POST
 
 resetPost = function() {
-    showListPosts();
-}
-
-
-function numPage() {
-    const $el = document.getElementById("pageUser")
-    callApi('users', 'GET')
-        .then(function(response) {
-            renderNumPage(response, $el)
-        })
-}
-
-function getList(pageNum) {
-    const $el = document.getElementById("posts");
-    callApi('users' + '?_page=' + pageNum + '&_limit=' + 5, 'GET')
-        .then(function(response) {
-            console.log(response);
-            renderListPost(response, $el);
-        })
+    getList();
 }

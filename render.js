@@ -60,13 +60,49 @@ var renderNumPage = function(data, element) {
         template = "";
     }
 
-    var numPage = data.length / 5;
+    var numPage;
 
-    for (var i = 1; i <= numPage; i++) {
-        console.log(i);
-        template += '<li>'
-        template += '<a onclick="getList(' + i + ')" href="#">' + i + '</a>'
+    if ((data.length % 5) != 0) {
+        var numPage = (data.length / 5) + 1;
+    } else {
+        var numPage = data.length / 5;
+    }
+
+    for (var i = 1; i <= (numPage); i++) {
+        template += '<li id="numUser" class="numUser">'
+        template += '<a onclick="getList(' + i + ')">' + i + '</a>'
         template += '</li>'
+
+
+    }
+
+
+
+    element.innerHTML = template;
+
+}
+
+
+var renderNumPageTodos = function(data, element) {
+    "use strict"
+    var template = "";
+    if (data.length === 0) {
+        template = "";
+    }
+
+    var numPage;
+
+    if ((data.length % 4) != 0) {
+        var numPage = (data.length / 4) + 1;
+    } else {
+        var numPage = data.length / 4;
+    }
+
+    for (var i = 1; i <= (numPage); i++) {
+        template += '<li id="numTodo" class="numTodo">'
+        template += '<a onclick="getListTodos(' + i + ')">' + i + '</a>'
+        template += '</li>'
+
     }
 
     element.innerHTML = template;
