@@ -69,11 +69,9 @@ var renderNumPage = function(data, element) {
     }
 
     for (var i = 1; i <= (numPage); i++) {
-        template += '<li id="numUser" class="numUser">'
+        template += '<li id="idNumUser" class="numUser">'
         template += '<a onclick="getList(' + i + ')">' + i + '</a>'
         template += '</li>'
-
-
     }
 
 

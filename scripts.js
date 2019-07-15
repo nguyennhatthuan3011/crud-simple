@@ -13,7 +13,7 @@ var todosId = '';
 var num = 1;
 var numberTodos = 1;
 var todosNum = '';
-
+var currentNumPageUser = 1;
 
 function initApplication() {
     // const defaultUserId = 1;
@@ -25,9 +25,7 @@ function initApplication() {
 
 
 // (function() {
-//     showListPosts();
-//     getTodos(defaultUserId);
-
+//     numPage();
 // })();
 
 // SHOW LIST USERS
@@ -56,9 +54,15 @@ function numPage() {
     const $el = document.getElementById("pageUser")
     callApi('users', 'GET')
         .then(function(response) {
-            renderNumPage(response, $el)
+            // debugger;
+            return renderNumPage(response, $el)
+        })
+        .then(function(response) {
+            getList(currentNumPageUser);
         })
 }
+
+
 
 // GET USER IN PAGE
 
@@ -66,7 +70,9 @@ function getList(pageNum) {
     var ulUser = document.getElementById("pageUser");
     var liUser = ulUser.getElementsByClassName("numUser");
     for (i = 0; i < liUser.length; i++) {
+        liUser[0].className += " active";
         liUser[i].addEventListener("click", function() {
+            liUser[0].classList.remove("active");
             var a = ulUser.getElementsByClassName("active");
             if (a.length > 0) {
                 a[0].className = a[0].className.replace("active", "");
@@ -191,7 +197,8 @@ savePost = function() {
                                 var num = response.id / 5;
                             }
                             numPage();
-                            return getList(num);
+                            currentNumPageUser = num;
+                            return getList(currentNumPageUser);
                         })
                         .then(function(_) {
                             alert("Edit Success");
@@ -229,10 +236,14 @@ deletePost = function(id) {
 // GET NUMPAGE TODOS
 
 function numPageTodos(numPageTodos) {
+
     const $el = document.getElementById("pageTodos")
     return callApi('todos?userId=' + numPageTodos, 'GET')
         .then(function(response) {
             return renderNumPageTodos(response, $el);
+        })
+        .then(function(response) {
+            getListTodos(1);
         });
 }
 
@@ -259,7 +270,9 @@ function getListTodos(numTodos) {
     var ulTodo = document.getElementById("pageTodos");
     var liTodo = ulTodo.getElementsByClassName("numTodo");
     for (i = 0; i < liTodo.length; i++) {
+        liTodo[0].className += " active";
         liTodo[i].addEventListener("click", function() {
+            liTodo[0].classList.remove("active");
             var a = ulTodo.getElementsByClassName("active");
             if (a.length > 0) {
                 a[0].className = a[0].className.replace("active", "");
@@ -360,14 +373,16 @@ deleteTodos = function(id) {
 
     // Code of function delete todos
     callApi('todos/' + id, 'DELETE')
+        .then(function() {
+            // var userid = document.getElementById("userTodos").value;
+            getListTodos(todosNum);
+        })
         .then(function(_) {
             // console.log(defaultUserId);
             return numPageTodos(defaultUserId);
         })
-        .then(function() {
-            var userid = document.getElementById("userTodos").value;
+        .then(function(_) {
             alert("Delete Success!")
-            getListTodos(todosNum);
         });
 
 
