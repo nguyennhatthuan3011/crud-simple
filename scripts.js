@@ -78,6 +78,34 @@ function numPage() {
 }
 
 
+// PREVIOUS PAGE USERS
+
+function previousPageUser() {
+    if (currentNumPageUser === 1) {
+        return;
+    } else {
+
+        currentNumPageUser = currentNumPageUser - 1;
+
+        clickHightLight(currentNumPageUser);
+        return showListUser(currentNumPageUser);
+    }
+}
+
+// NEXT PAGE USERS
+
+function nextPageUser() {
+    if (parseInt(currentNumPageUser) === maxNumPage) {
+        return;
+    } else {
+        currentNumPageUser++;
+        clickHightLight(currentNumPageUser);
+        return showListUser(currentNumPageUser);
+    }
+}
+
+
+
 // CREATE USER
 addPost = function() {
 
@@ -105,17 +133,9 @@ addPost = function() {
                     var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
                     callApi('users', 'POST', data)
                         .then(function(response) {
-                            // currentNumPageUser = Math.ceil(response.id / 5);
-                            // var ulUser = document.getElementById("pageUser")
-                            // var liUser = ulUser.getElementsByClassName("numUser");
-                            // for (i = 0; i < liUser.length; i++) {
-                            //     if (liUser[i].getAttribute === currentNumPageUser) {
-                            //         this.classList.add("active");
-                            //     }
-                            // }
-
-                            numPage();
-                            return showListUser();
+                            currentNumPageUser = Math.ceil(response.id / 5);
+                            clickHightLight(currentNumPageUser);
+                            return showListUser(currentNumPageUser);
                         })
                         .then(function(_) {
                             document.getElementById("createUserForm").reset();
@@ -203,7 +223,6 @@ deletePost = function(id) {
         .then(function() {;
             return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
                 .then(function(response) {
-
                     var userLength = response.length;
                     if (userLength > 0) {
                         return;
@@ -214,7 +233,6 @@ deletePost = function(id) {
                             var ulUser = document.getElementById("pageUser");
                             var liUser = ulUser.getElementsByClassName("numUser");
                             for (i = 0; i < liUser.length; i++) {
-                                // debugger;
                                 if (liUser[i].classList.contains('active')) {
                                     liUser[i].parentNode.removeChild(liUser[i]);
                                     liUser[i - 1].classList.add("active");
@@ -231,9 +249,9 @@ deletePost = function(id) {
         .then(function(_) {
             return getTodos(headUserId);
         })
-        // .then(function(_) {
-        //     alert('Delete Success!');
-        // })
+        .then(function(_) {
+            alert('Delete Success!');
+        })
 }
 
 
@@ -247,10 +265,11 @@ function numPageTodos(numPageTodos) {
     const $el = document.getElementById("pageTodos")
     return callApi('todos?userId=' + numPageTodos, 'GET')
         .then(function(response) {
-            return renderNumPageTodos(response, $el);
+            renderNumPageTodos(response, $el);
         })
-        .then(function(response) {
+        .then(function(_) {
             getListTodos(1);
+
         });
 }
 
@@ -269,8 +288,6 @@ function getTodos(id) {
     document.getElementById("titleTodosList").innerHTML = defaultUserId;
 
 }
-
-
 
 // GET TODOS IN PAGE
 function getListTodos(numTodos) {
@@ -295,10 +312,6 @@ function getListTodos(numTodos) {
             // console.log(response);
             return renderListTodos(response, $el)
         })
-        // .then(function(_) {
-        //     // console.log(defaultUserId);
-        //     return numPageTodos(defaultUserId);
-        // })
     document.getElementById("titleTodosList").innerHTML = defaultUserId;
 }
 
@@ -382,6 +395,7 @@ deleteTodos = function(id) {
     callApi('todos/' + id, 'DELETE')
         .then(function() {
             // var userid = document.getElementById("userTodos").value;
+            console.log(todosNum);
             getListTodos(todosNum);
         })
         .then(function(_) {
@@ -434,20 +448,18 @@ saveTodos = function() {
             .then(function(response) {
                 _.remove(response, ['id', todosId])
                 var filterTitle = _.filter(response, ['title', editTitle]);
+                console.log(filterTitle);
                 if (filterTitle.length === 0) {
                     var data = {
                         "userId": editUserId,
                         "title": editTitle,
                         "completed": editCompleted
                     }
-
                     callApi('todos/' + todosId, 'PUT', data)
                         .then(function(response) {
                             return getListTodos(todosNum);
                         })
                         .then(function(response) {
-                            // console.log(response);
-                            // getTodos(defaultUserId);
                             alert("Edit Success!")
                         });
                     $('#edittodoModal').modal('hide')
@@ -486,7 +498,6 @@ searchPost = function() {
                 }
                 $el.innerHTML = template;
             }
-            // $("#pageUser").hidden();
             document.getElementById("pageUser").style.display = 'none';
         })
 };

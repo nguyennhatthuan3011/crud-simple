@@ -1,3 +1,6 @@
+var maxNumPage = ''
+
+
 var renderListPost = function(data, element) {
     "use strict";
 
@@ -64,18 +67,21 @@ var renderNumPage = function(data, element) {
 
     numPage = Math.ceil(data.length / 5)
 
+    maxNumPage = numPage;
+    template += '<li class="previous" onclick="previousPageUser()"><a href="#">Previous</a></li>'
     for (var i = 1; i <= (numPage); i++) {
+
         template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
         template += '<a>' + i + '</a>'
         template += '</li>'
+
     }
-
-    // for (var i = 1; i <= (numPage); i++) {
-    //     template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
-    //     template += '<a onclick="getList(' + i + ')">' + i + '</a>'
-    //     template += '</li>'
-    // }
-
+    template += '<li class="next" onclick="nextPageUser()"><a href="#">Next</a></li>'
+        // for (var i = 1; i <= (numPage); i++) {
+        //     template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
+        //     template += '<a onclick="getList(' + i + ')">' + i + '</a>'
+        //     template += '</li>'
+        // }
 
 
     element.innerHTML = template;
@@ -95,6 +101,12 @@ var renderNumPageTodos = function(data, element) {
     var numPage;
     numPage = Math.ceil(data.length / 4)
 
+
+    // for (var i = 1; i <= (numPage); i++) {
+    //     template += '<li id="idNumTodos" class="numTodos" data-id="' + i + '">'
+    //     template += '<a>' + i + '</a>'
+    //     template += '</li>'
+    // }
     for (var i = 1; i <= (numPage); i++) {
         template += '<li id="numTodo" class="numTodo">'
         template += '<a onclick="getListTodos(' + i + ')">' + i + '</a>'
@@ -103,4 +115,20 @@ var renderNumPageTodos = function(data, element) {
     }
 
     element.innerHTML = template;
+}
+
+
+//HIGHLIGHT NEXT AND PREVIOUS PAGE
+
+function clickHightLight(currentPage) {
+    var ulUser = document.getElementById("pageUser");
+    var liUser = ulUser.getElementsByClassName("numUser");
+    for (i = 0; i < liUser.length; i++) {
+        if (liUser[i].classList.contains('active')) {
+            liUser[i].classList.remove("active");
+        }
+        if (parseInt(liUser[i].getAttribute("data-id")) === currentPage) {
+            liUser[i].classList.add("active");
+        }
+    }
 }
