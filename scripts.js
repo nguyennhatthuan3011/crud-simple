@@ -16,37 +16,48 @@ var todosNum = '';
 var currentNumPageUser = 1;
 
 function initApplication() {
-    // const defaultUserId = 1;
-    // showListPosts();
     getTodos(defaultUserId);
     numPage();
-    getList();
+    showListUser(currentNumPageUser);
 }
 
 
-// (function() {
-//     numPage();
-// })();
+//SET HiGHLIGHT
 
-// SHOW LIST USERS
-
-
-// function showListPosts() {
-//     // Code of function show list post
-
-//     const $el = document.getElementById('posts');
-
-//     return callApi('users', 'GET')
-//         .then(function(response) {
-//             renderListPost(response, $el);
-//             // defaultUserId = headIdUser;
-//         });
-// };
+function setHighLight() {
+    var ulUser = document.getElementById("pageUser");
+    var liUser = ulUser.getElementsByClassName("numUser");
+    for (i = 0; i < liUser.length; i++) {
+        liUser[0].className += " active";
+    }
+}
 
 
-// USERS
+var onUserClickPage = function(elm) {
+    var attribute = this.getAttribute("data-id");
+    var ulUser = document.getElementById("pageUser");
+    var a = ulUser.getElementsByClassName("active");
+    if (attribute === a[0].getAttribute("data-id")) {
+        return;
+    } else {
+        a[0].classList.remove("active");
+        this.classList.add("active");
+    }
+    // console.log(attribute);
+    currentNumPageUser = attribute;
+    return showListUser(attribute);
+};
 
 
+// SHOW LIST USERPAGE
+
+function showListUser(attr) {
+    const $el = document.getElementById("posts");
+    return callApi('users' + '?_page=' + attr + '&_limit=' + 5, 'GET')
+        .then(function(response) {
+            return renderListPost(response, $el);
+        });
+}
 
 // CREATE NUMPAGE USER
 
@@ -54,39 +65,18 @@ function numPage() {
     const $el = document.getElementById("pageUser")
     callApi('users', 'GET')
         .then(function(response) {
-            // debugger;
             return renderNumPage(response, $el)
         })
-        .then(function(response) {
-            getList(currentNumPageUser);
-        })
-}
+        .then(function() {
+            setHighLight();
 
-
-
-// GET USER IN PAGE
-
-function getList(pageNum) {
-    var ulUser = document.getElementById("pageUser");
-    var liUser = ulUser.getElementsByClassName("numUser");
-    for (i = 0; i < liUser.length; i++) {
-        liUser[0].className += " active";
-        liUser[i].addEventListener("click", function() {
-            liUser[0].classList.remove("active");
-            var a = ulUser.getElementsByClassName("active");
-            if (a.length > 0) {
-                a[0].className = a[0].className.replace("active", "");
-            }
-            this.className += " active";
+            var userPages = document.getElementsByClassName("numUser");
+            _.each(userPages, function(page) {
+                page.addEventListener('click', onUserClickPage, false);
+            })
         });
-    }
-
-    const $el = document.getElementById("posts");
-    return callApi('users' + '?_page=' + pageNum + '&_limit=' + 5, 'GET')
-        .then(function(response) {
-            return renderListPost(response, $el);
-        })
 }
+
 
 // CREATE USER
 addPost = function() {
@@ -115,14 +105,17 @@ addPost = function() {
                     var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
                     callApi('users', 'POST', data)
                         .then(function(response) {
+                            // currentNumPageUser = Math.ceil(response.id / 5);
+                            // var ulUser = document.getElementById("pageUser")
+                            // var liUser = ulUser.getElementsByClassName("numUser");
+                            // for (i = 0; i < liUser.length; i++) {
+                            //     if (liUser[i].getAttribute === currentNumPageUser) {
+                            //         this.classList.add("active");
+                            //     }
+                            // }
 
-                            if ((response.id % 5) != 0) {
-                                var num = (response.id / 5) + 1;
-                            } else {
-                                var num = response.id / 5;
-                            }
                             numPage();
-                            return getList(num);
+                            return showListUser();
                         })
                         .then(function(_) {
                             document.getElementById("createUserForm").reset();
@@ -190,15 +183,7 @@ savePost = function() {
 
                     callApi('users/' + defaultUserId, 'PUT', data)
                         .then(function(response) {
-                            // showListPosts();
-                            if ((response.id % 5) != 0) {
-                                var num = (response.id / 5) + 1;
-                            } else {
-                                var num = response.id / 5;
-                            }
-                            numPage();
-                            currentNumPageUser = num;
-                            return getList(currentNumPageUser);
+                            return showListUser(currentNumPageUser);
                         })
                         .then(function(_) {
                             alert("Edit Success");
@@ -215,18 +200,40 @@ savePost = function() {
 //DELETE USERS
 deletePost = function(id) {
     callApi('users/' + id, 'DELETE')
+        .then(function() {;
+            return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
+                .then(function(response) {
+
+                    var userLength = response.length;
+                    if (userLength > 0) {
+                        return;
+                    } else {
+                        if (currentNumPageUser === 1) {
+                            return;
+                        } else {
+                            var ulUser = document.getElementById("pageUser");
+                            var liUser = ulUser.getElementsByClassName("numUser");
+                            for (i = 0; i < liUser.length; i++) {
+                                // debugger;
+                                if (liUser[i].classList.contains('active')) {
+                                    liUser[i].parentNode.removeChild(liUser[i]);
+                                    liUser[i - 1].classList.add("active");
+                                }
+                            }
+                            currentNumPageUser--;
+                        }
+                    }
+                })
+        })
         .then(function(_) {
-            return getList();
+            return showListUser(currentNumPageUser);
         })
         .then(function(_) {
             return getTodos(headUserId);
         })
-        .then(function(_) {
-            return numPage();
-        })
-        .then(function(_) {
-            alert('Delete Success!');
-        })
+        // .then(function(_) {
+        //     alert('Delete Success!');
+        // })
 }
 
 
@@ -479,6 +486,8 @@ searchPost = function() {
                 }
                 $el.innerHTML = template;
             }
+            // $("#pageUser").hidden();
+            document.getElementById("pageUser").style.display = 'none';
         })
 };
 
@@ -486,5 +495,6 @@ searchPost = function() {
 // RESET POST
 
 resetPost = function() {
-    getList();
+    document.getElementById("pageUser").style.display = 'block';
+    return showListUser(currentNumPageUser);
 }

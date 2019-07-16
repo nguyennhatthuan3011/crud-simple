@@ -62,23 +62,27 @@ var renderNumPage = function(data, element) {
 
     var numPage;
 
-    if ((data.length % 5) != 0) {
-        var numPage = (data.length / 5) + 1;
-    } else {
-        var numPage = data.length / 5;
-    }
+    numPage = Math.ceil(data.length / 5)
 
     for (var i = 1; i <= (numPage); i++) {
-        template += '<li id="idNumUser" class="numUser">'
-        template += '<a onclick="getList(' + i + ')">' + i + '</a>'
+        template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
+        template += '<a>' + i + '</a>'
         template += '</li>'
     }
+
+    // for (var i = 1; i <= (numPage); i++) {
+    //     template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
+    //     template += '<a onclick="getList(' + i + ')">' + i + '</a>'
+    //     template += '</li>'
+    // }
 
 
 
     element.innerHTML = template;
 
 }
+
+
 
 
 var renderNumPageTodos = function(data, element) {
@@ -89,12 +93,7 @@ var renderNumPageTodos = function(data, element) {
     }
 
     var numPage;
-
-    if ((data.length % 4) != 0) {
-        var numPage = (data.length / 4) + 1;
-    } else {
-        var numPage = data.length / 4;
-    }
+    numPage = Math.ceil(data.length / 4)
 
     for (var i = 1; i <= (numPage); i++) {
         template += '<li id="numTodo" class="numTodo">'
