@@ -14,97 +14,13 @@ var num = 1;
 var numberTodos = 1;
 var todosNum = '';
 var currentNumPageUser = 1;
+var userLength = 0;
 
 function initApplication() {
     getTodos(defaultUserId);
     numPage();
     showListUser(currentNumPageUser);
 }
-
-
-//SET HiGHLIGHT
-
-function setHighLight() {
-    var ulUser = document.getElementById("pageUser");
-    var liUser = ulUser.getElementsByClassName("numUser");
-    for (i = 0; i < liUser.length; i++) {
-        liUser[0].className += " active";
-    }
-}
-
-
-var onUserClickPage = function(elm) {
-    var attribute = this.getAttribute("data-id");
-    var ulUser = document.getElementById("pageUser");
-    var a = ulUser.getElementsByClassName("active");
-    if (attribute === a[0].getAttribute("data-id")) {
-        return;
-    } else {
-        a[0].classList.remove("active");
-        this.classList.add("active");
-    }
-    // console.log(attribute);
-    currentNumPageUser = attribute;
-    return showListUser(attribute);
-};
-
-
-// SHOW LIST USERPAGE
-
-function showListUser(attr) {
-    const $el = document.getElementById("posts");
-    return callApi('users' + '?_page=' + attr + '&_limit=' + 5, 'GET')
-        .then(function(response) {
-            return renderListPost(response, $el);
-        });
-}
-
-// CREATE NUMPAGE USER
-
-function numPage() {
-    const $el = document.getElementById("pageUser")
-    callApi('users', 'GET')
-        .then(function(response) {
-            return renderNumPage(response, $el)
-        })
-        .then(function() {
-            setHighLight();
-
-            var userPages = document.getElementsByClassName("numUser");
-            _.each(userPages, function(page) {
-                page.addEventListener('click', onUserClickPage, false);
-            })
-        });
-}
-
-
-// PREVIOUS PAGE USERS
-
-function previousPageUser() {
-    if (currentNumPageUser === 1) {
-        return;
-    } else {
-
-        currentNumPageUser = currentNumPageUser - 1;
-
-        clickHightLight(currentNumPageUser);
-        return showListUser(currentNumPageUser);
-    }
-}
-
-// NEXT PAGE USERS
-
-function nextPageUser() {
-    if (parseInt(currentNumPageUser) === maxNumPage) {
-        return;
-    } else {
-        currentNumPageUser++;
-        clickHightLight(currentNumPageUser);
-        return showListUser(currentNumPageUser);
-    }
-}
-
-
 
 // CREATE USER
 addPost = function() {
@@ -134,7 +50,7 @@ addPost = function() {
                     callApi('users', 'POST', data)
                         .then(function(response) {
                             currentNumPageUser = Math.ceil(response.id / 5);
-                            clickHightLight(currentNumPageUser);
+                            afterActionNumPage(currentNumPageUser);
                             return showListUser(currentNumPageUser);
                         })
                         .then(function(_) {
@@ -150,9 +66,7 @@ addPost = function() {
     }
 }
 
-
 // CANCEL CREATE USERS
-
 cancelAdd = function() {
     document.getElementById("createUserForm").reset();
 }
@@ -172,7 +86,6 @@ editPost = function(id) {
 }
 
 // SAVE EDIT POST
-
 savePost = function() {
 
     var fEditName = document.forms["editUserForm"]["editName"].value;
@@ -223,34 +136,33 @@ deletePost = function(id) {
         .then(function() {;
             return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
                 .then(function(response) {
-                    var userLength = response.length;
+                    userLength = response.length;
+                    if (userLength === 0) {
+                        currentNumPageUser--;
+                    }
+                    return showListUser(currentNumPageUser);
+                })
+                .then(function(_) {
+                    // debugger
                     if (userLength > 0) {
                         return;
                     } else {
-                        if (currentNumPageUser === 1) {
-                            return;
-                        } else {
-                            var ulUser = document.getElementById("pageUser");
-                            var liUser = ulUser.getElementsByClassName("numUser");
-                            for (i = 0; i < liUser.length; i++) {
-                                if (liUser[i].classList.contains('active')) {
-                                    liUser[i].parentNode.removeChild(liUser[i]);
-                                    liUser[i - 1].classList.add("active");
-                                }
+                        var ulUser = document.getElementById("pageUser");
+                        var liUser = ulUser.getElementsByClassName("numUser");
+                        for (i = 0; i < liUser.length; i++) {
+                            if (liUser[i].classList.contains('active')) {
+                                liUser[i].parentNode.removeChild(liUser[i]);
+                                if (liUser.length > 0) { liUser[i - 1].classList.add("active"); }
                             }
-                            currentNumPageUser--;
                         }
                     }
                 })
         })
         .then(function(_) {
-            return showListUser(currentNumPageUser);
-        })
-        .then(function(_) {
             return getTodos(headUserId);
         })
         .then(function(_) {
-            alert('Delete Success!');
+            // alert('Delete Success!');
         })
 }
 
@@ -266,11 +178,32 @@ function numPageTodos(numPageTodos) {
     return callApi('todos?userId=' + numPageTodos, 'GET')
         .then(function(response) {
             renderNumPageTodos(response, $el);
+            todosPage = document.getElementsByClassName("numTodos")
+            console.log(todosPage);
+            _.each(todosPage, function(todosPage) {
+                todosPage.addEventListener('click', onTodosClick, false)
+            })
         })
         .then(function(_) {
             getListTodos(1);
 
         });
+}
+
+
+var onTodosClick = function(elm) {
+    var attribute = this.getAttribute("data-id");
+    console.log(attribute);
+    // var ulUser = document.getElementById("pageTodos");
+    // var a = ulUser.getElementsByClassName("active");
+    // if (attribute === a[0].getAttribute("data-id")) {
+    //     return;
+    // } else {
+    //     a[0].classList.remove("active");
+    //     this.classList.add("active");
+
+    // currentNumPageUser = attribute;
+    // return getListTodos(attribute);
 }
 
 // GET TODOS
@@ -283,11 +216,14 @@ function getTodos(id) {
             return renderListTodos(response, $el)
         })
         .then(function(_) {
-            return numPageTodos(id);
+            numPageTodos(id);
         })
     document.getElementById("titleTodosList").innerHTML = defaultUserId;
 
 }
+
+
+
 
 // GET TODOS IN PAGE
 function getListTodos(numTodos) {
