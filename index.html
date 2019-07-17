@@ -54,32 +54,35 @@
                                     <div class="form-group">
                                         <label for="name">Name:</label>
                                         <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                                        <p id="errName"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="username">Username:</label>
                                         <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+                                        <p id="errUsername"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email:</label>
                                         <input type="email" class="form-control" name="email" id="email" placeholder="email@gmail.com">
+                                        <p id="errEmail"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="phone">Phone:</label>
                                         <input type="text" class="form-control" name="phone" id="phone" placeholder="092826xxxx">
+                                        <p id="errPhone"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="website">Website:</label>
                                         <input type="text" class="form-control" name="website" id="website" placeholder="Your Website">
+                                        <p id="errWebsite"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" type="button" onclick="validateCreateUser()">Create</button>
+                                        <button onclick="cancelAdd()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button onclick="addPost()" class="btn btn-primary">Create</button>
-                                <button onclick="cancelAdd()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -147,12 +150,6 @@
 
                         </tbody>
                     </table>
-                    <!-- <div>
-                        <ul id="pageUser" class="pagination pagination-sm">
-                        </ul>
-                    </div> -->
-
-
                     <!-- modal edit -->
 
 
@@ -171,30 +168,36 @@
                                         <div class="form-group">
                                             <label for="name">Name:</label>
                                             <input type="text" name="editName" class="form-control" id="editName">
+                                            <p id="errEditName"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="username">Username:</label>
                                             <input type="text" name="editUsername" class="form-control" id="editUsername">
+                                            <p id="errEditUsername"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Email:</label>
                                             <input type="email" name="editEmail" class="form-control" id="editEmail">
+                                            <p id="errEditEmail"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="phone">Phone:</label>
                                             <input type="text" name="editPhone" class="form-control" id="editPhone">
+                                            <p id="errEditPhone"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="website">Website:</label>
                                             <input type="text" name="editWebsite" class="form-control" id="editWebsite">
+                                            <p id="errEditWebsite"></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button onclick="validateEditUser()" type="button" class="btn btn-primary">Edit</button>
+                                            <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                         </div>
                                     </form>
 
                                 </div>
-                                <div class="modal-footer">
-                                    <button onclick="savePost()" class="btn btn-primary">Edit</button>
-                                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -247,7 +250,7 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" onclick="saveTodos()">Edit</button>
+                                    <button type="submit" class="btn btn-primary" type="button" onclick="saveTodos()">Edit</button>
                                     <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
@@ -284,6 +287,7 @@
     <script src="autocompleted.js"></script>
     <script src="pagination.js"></script>
     <script src="search.js"></script>
+    <script src="validate.js"></script>
 </body>
 
 </html>

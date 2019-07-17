@@ -24,48 +24,44 @@ function initApplication() {
 }
 
 // CREATE USER
-addPost = function() {
+function addPost() {
+    var name = document.getElementById("name").value;
+    var username = document.getElementById("username").value;
+    var email = document.getElementById("email").value;
+    var phone = document.getElementById("phone").value;
+    var website = document.getElementById("website").value;
 
-    var fName = document.forms["createUserForm"]["name"].value;
-    var fUsername = document.forms["createUserForm"]["username"].value;
-    var fEmail = document.forms["createUserForm"]["email"].value;
-    var fPhone = document.forms["createUserForm"]["phone"].value;
-    var fWebsite = document.forms["createUserForm"]["website"].value;
-    if (fName == "" || fUsername == "" || fEmail == "" || fPhone == "" || fWebsite == "") {
-        alert("All Field Must Be Filled!")
-        return false;
-    } else {
-        var name = document.getElementById("name").value;
-        var username = document.getElementById("username").value;
-        var email = document.getElementById("email").value;
-        var phone = document.getElementById("phone").value;
-        var website = document.getElementById("website").value;
-
-        callApi('users', 'GET')
-            .then(function(response) {
-                var filterCreate = _.filter(response, function(object) {
-                    return object.username === username || object.email === email;
-                });
-                if (filterCreate.length === 0) {
-                    var data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
-                    callApi('users', 'POST', data)
-                        .then(function(response) {
-                            currentNumPageUser = Math.ceil(response.id / 5);
-                            afterActionNumPage(currentNumPageUser);
-                            return showListUser(currentNumPageUser);
-                        })
-                        .then(function(_) {
-                            document.getElementById("createUserForm").reset();
-                            alert("Add User Success");
-                        })
-                    $('#createuserModal').modal('hide')
-                } else {
-                    alert("Username or Email exists!")
-                    return false;
-                }
-            })
-    }
+    return callApi('users', 'GET')
+        .then(function(response) {
+            var filterCreate = _.filter(response, function(object) {
+                return object.username === username || object.email === email;
+            });
+            if (filterCreate.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+        })
+        .then(function(bool) {
+            if (bool === false) {
+                alert('Username or Email has been exist')
+            } else {
+                data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
+                callApi('users', 'POST', data)
+                    .then(function(response) {
+                        currentNumPageUser = Math.ceil(response.id / 5);
+                        afterActionNumPage(currentNumPageUser);
+                        return showListUser(currentNumPageUser);
+                    })
+                    .then(function(_) {
+                        $('#createuserModal').modal('hide')
+                        alert('Create Success!')
+                    })
+            }
+        })
 }
+
+
 
 // CANCEL CREATE USERS
 cancelAdd = function() {
@@ -89,52 +85,75 @@ editPost = function(id) {
 // SAVE EDIT POST
 savePost = function() {
 
-    var fEditName = document.forms["editUserForm"]["editName"].value;
-    var fEditUsername = document.forms["editUserForm"]["editUsername"].value;
-    var fEditEmail = document.forms["editUserForm"]["editEmail"].value;
-    var fEditPhone = document.forms["editUserForm"]["editPhone"].value;
-    var fEditWebsite = document.forms["editUserForm"]["editWebsite"].value;
-    if (fEditName == "" || fEditUsername == "" || fEditEmail == "" || fEditPhone == "" || fEditWebsite == "") {
-        alert("All Field Must Be Filled!")
-        return false;
-    } else {
-        var editName = document.getElementById("editName").value;
-        var editUsername = document.getElementById("editUsername").value;
-        var editEmail = document.getElementById("editEmail").value;
-        var editPhone = document.getElementById("editPhone").value;
-        var editWebsite = document.getElementById("editWebsite").value;
+    // var fEditName = document.forms["editUserForm"]["editName"].value;
+    // var fEditUsername = document.forms["editUserForm"]["editUsername"].value;
+    // var fEditEmail = document.forms["editUserForm"]["editEmail"].value;
+    // var fEditPhone = document.forms["editUserForm"]["editPhone"].value;
+    // var fEditWebsite = document.forms["editUserForm"]["editWebsite"].value;
+    // if (fEditName == "" || fEditUsername == "" || fEditEmail == "" || fEditPhone == "" || fEditWebsite == "") {
+    //     alert("All Field Must Be Filled!")
+    //     return false;
+    // } else {
+    var editName = document.getElementById("editName").value;
+    var editUsername = document.getElementById("editUsername").value;
+    var editEmail = document.getElementById("editEmail").value;
+    var editPhone = document.getElementById("editPhone").value;
+    var editWebsite = document.getElementById("editWebsite").value;
 
-        // FILTER USERNAME AND EMAIL
+    // FILTER USERNAME AND EMAIL
 
-        callApi('users', 'GET')
-            .then(function(response) {
-                _.remove(response, ['id', defaultUserId]);
-                var filterEdit = _.filter(response, function(object) {
-                    return object.username === editUsername || object.email === editEmail;
-                });
-                if (filterEdit.length === 0) {
-                    var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
+    return callApi('users', 'GET')
+        .then(function(response) {
+            _.remove(response, ['id', defaultUserId]);
+            var filterEdit = _.filter(response, function(object) {
+                return object.username === editUsername || object.email === editEmail;
+            });
+            if (filterEdit.length === 0) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+        .then(function(bool) {
+            if (bool === false) {
+                alert("Username or Email exist!")
+            } else {
+                var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
-                    callApi('users/' + defaultUserId, 'PUT', data)
-                        .then(function(response) {
-                            return showListUser(currentNumPageUser);
-                        })
-                        .then(function(_) {
-                            alert("Edit Success");
-                        });
-                    $('#edituserModal').modal('hide')
-                } else {
-                    alert("Username or Email exists!")
-                    return false;
-                }
-            })
-    }
+                callApi('users/' + defaultUserId, 'PUT', data)
+                    .then(function(response) {
+                        return showListUser(currentNumPageUser);
+                    })
+                    .then(function(_) {
+                        alert("Edit Success");
+                        $('#edituserModal').modal('hide')
+                    });
+            }
+        });
+    // if (filterEdit.length === 0) {
+    //     var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
+
+    //     callApi('users/' + defaultUserId, 'PUT', data)
+    //         .then(function(response) {
+    //             return showListUser(currentNumPageUser);
+    //         })
+    //         .then(function(_) {
+    //             alert("Edit Success");
+    //         });
+    //     $('#edituserModal').modal('hide')
+    // } else {
+    //     alert("Username or Email exists!")
+    //     return false;
+    // }
+    // })
+    // }
 };
 
 //DELETE USERS
 deletePost = function(id) {
     callApi('users/' + id, 'DELETE')
-        .then(function() {;
+        .then(function() {
+            console.log(maxNumPage);
             return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
                 .then(function(response) {
                     userLength = response.length;
@@ -152,7 +171,7 @@ deletePost = function(id) {
                         for (i = 0; i < liUser.length; i++) {
                             if (liUser[i].classList.contains('active')) {
                                 liUser[i].parentNode.removeChild(liUser[i]);
-                                if (liUser.length > 0) {
+                                if (liUser.length) {
                                     liUser[i - 1].classList.add("active");
                                 }
                             }
