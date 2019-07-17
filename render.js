@@ -1,4 +1,5 @@
-var maxNumPage = ''
+var maxNumPage = '';
+var maxNumPageTodo = '';
 
 
 var renderListPost = function(data, element) {
@@ -77,15 +78,7 @@ var renderNumPage = function(data, element) {
 
     }
     template += '<li class="next" onclick="nextPageUser()"><a href="#">Next</a></li>'
-        // for (var i = 1; i <= (numPage); i++) {
-        //     template += '<li id="idNumUser" class="numUser" data-id="' + i + '">'
-        //     template += '<a onclick="getList(' + i + ')">' + i + '</a>'
-        //     template += '</li>'
-        // }
-
-
     element.innerHTML = template;
-
 }
 
 
@@ -99,19 +92,16 @@ var renderNumPageTodos = function(data, element) {
     }
 
     var numPage;
-    numPage = Math.ceil(data.length / 4)
+    numPage = Math.ceil(data.length / 4);
 
+    maxNumPageTodo = numPage;
 
+    template += '<li class="previous" onclick="previousPageTodos()"><a href="#">Previous</a></li>'
     for (var i = 1; i <= (numPage); i++) {
         template += '<li id="idNumTodos" class="numTodos" data-id="' + i + '">'
         template += '<a>' + i + '</a>'
         template += '</li>'
     }
-    // for (var i = 1; i <= (numPage); i++) {
-    //     template += '<li id="numTodo" class="numTodo">'
-    //     template += '<a onclick="getListTodos(' + i + ')">' + i + '</a>'
-    //     template += '</li>'
-    // }
-
+    template += '<li class="next" onclick="nextPageTodos()"><a href="#">Next</a></li>'
     element.innerHTML = template;
 }

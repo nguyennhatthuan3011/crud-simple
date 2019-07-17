@@ -15,6 +15,7 @@ var numberTodos = 1;
 var todosNum = '';
 var currentNumPageUser = 1;
 var userLength = 0;
+var todosLength = 0;
 
 function initApplication() {
     getTodos(defaultUserId);
@@ -143,7 +144,6 @@ deletePost = function(id) {
                     return showListUser(currentNumPageUser);
                 })
                 .then(function(_) {
-                    // debugger
                     if (userLength > 0) {
                         return;
                     } else {
@@ -152,7 +152,9 @@ deletePost = function(id) {
                         for (i = 0; i < liUser.length; i++) {
                             if (liUser[i].classList.contains('active')) {
                                 liUser[i].parentNode.removeChild(liUser[i]);
-                                if (liUser.length > 0) { liUser[i - 1].classList.add("active"); }
+                                if (liUser.length > 0) {
+                                    liUser[i - 1].classList.add("active");
+                                }
                             }
                         }
                     }
@@ -168,89 +170,6 @@ deletePost = function(id) {
 
 
 // TODOS
-
-
-// GET NUMPAGE TODOS
-
-function numPageTodos(numPageTodos) {
-
-    const $el = document.getElementById("pageTodos")
-    return callApi('todos?userId=' + numPageTodos, 'GET')
-        .then(function(response) {
-            renderNumPageTodos(response, $el);
-            todosPage = document.getElementsByClassName("numTodos")
-            console.log(todosPage);
-            _.each(todosPage, function(todosPage) {
-                todosPage.addEventListener('click', onTodosClick, false)
-            })
-        })
-        .then(function(_) {
-            getListTodos(1);
-
-        });
-}
-
-
-var onTodosClick = function(elm) {
-    var attribute = this.getAttribute("data-id");
-    console.log(attribute);
-    // var ulUser = document.getElementById("pageTodos");
-    // var a = ulUser.getElementsByClassName("active");
-    // if (attribute === a[0].getAttribute("data-id")) {
-    //     return;
-    // } else {
-    //     a[0].classList.remove("active");
-    //     this.classList.add("active");
-
-    // currentNumPageUser = attribute;
-    // return getListTodos(attribute);
-}
-
-// GET TODOS
-
-function getTodos(id) {
-    defaultUserId = id
-    const $el = document.getElementById("todos");
-    callApi('todos' + '?userId=' + id + '&_page=' + 1 + '&_limit=' + 4, 'GET')
-        .then(function(response) {
-            return renderListTodos(response, $el)
-        })
-        .then(function(_) {
-            numPageTodos(id);
-        })
-    document.getElementById("titleTodosList").innerHTML = defaultUserId;
-
-}
-
-
-
-
-// GET TODOS IN PAGE
-function getListTodos(numTodos) {
-    var ulTodo = document.getElementById("pageTodos");
-    var liTodo = ulTodo.getElementsByClassName("numTodo");
-    for (i = 0; i < liTodo.length; i++) {
-        liTodo[0].className += " active";
-        liTodo[i].addEventListener("click", function() {
-            liTodo[0].classList.remove("active");
-            var a = ulTodo.getElementsByClassName("active");
-            if (a.length > 0) {
-                a[0].className = a[0].className.replace("active", "");
-            }
-            this.className += " active";
-        });
-    }
-    todosNum = numTodos;
-    // console.log(defaultUserId);
-    const $el = document.getElementById("todos");
-    return callApi('todos' + '?userId=' + defaultUserId + '&_page=' + numTodos + '&_limit=' + 4, 'GET')
-        .then(function(response) {
-            // console.log(response);
-            return renderListTodos(response, $el)
-        })
-    document.getElementById("titleTodosList").innerHTML = defaultUserId;
-}
-
 // CREATE TODOS
 
 createTodos = function() {
@@ -323,28 +242,6 @@ cancelAddTodos = function() {
     document.getElementById("createTodosForm").reset();
 }
 
-// DELETE TODOS
-
-deleteTodos = function(id) {
-
-    // Code of function delete todos
-    callApi('todos/' + id, 'DELETE')
-        .then(function() {
-            // var userid = document.getElementById("userTodos").value;
-            console.log(todosNum);
-            getListTodos(todosNum);
-        })
-        .then(function(_) {
-            // console.log(defaultUserId);
-            return numPageTodos(defaultUserId);
-        })
-        .then(function(_) {
-            alert("Delete Success!")
-        });
-
-
-}
-
 // EDIT TODOS
 
 editTodos = function(id) {
@@ -404,44 +301,42 @@ saveTodos = function() {
                     return false;
                 }
             })
-
     }
 }
 
-// // SEARCH POST
-searchPost = function() {
+// DELETE TODOS
 
-    let $el = document.getElementById("posts")
-    var username = document.getElementById("find").value;
-    document.getElementById("form").reset();
-    callApi('users?name=' + username, 'GET')
-        .then(function(response) {
-            // console.log(response)
-            if (response.length > 0) {
-                let template = '';
-                for (i = 0; i < response.length; i++) {
-                    template += '<tr>';
-                    template += '<td>' + response[i].id + '</td>';
-                    template += '<td>' + response[i].name + '</td>';
-                    template += '<td>' + response[i].username + '</td>';
-                    template += '<td>' + response[i].email + '</td>';
-                    template += '<td>' + response[i].phone + '</td>';
-                    template += '<td>' + response[i].website + '</td>';
-                    template += '<td class="colEdit"><button class="btn btn-warning" onclick="editPost(' + response[i].id + ')" data-toggle="modal" data-target="#edituserModal">Edit</button></td>';
-                    template += `<td class="colDel"><button class="btn btn-danger" onclick="deletePost('${response[i].id}')">Delete</button></td>`;
-                    template += '<td class="colEdit"><button class="btn btn-success" onclick="getTodos(' + response[i].id + ')">Detail</button></td>';
-                    template += '</tr>'
-                }
-                $el.innerHTML = template;
-            }
-            document.getElementById("pageUser").style.display = 'none';
-        })
-};
+deleteTodos = function(id) {
 
-
-// RESET POST
-
-resetPost = function() {
-    document.getElementById("pageUser").style.display = 'block';
-    return showListUser(currentNumPageUser);
+    // Code of function delete todos
+    callApi('todos/' + id, 'DELETE')
+        .then(function() {
+            return callApi('todos' + '?userId=' + defaultUserId + '&_page=' + todosNum + '&_limit=' + 4, 'GET')
+                .then(function(response) {
+                    todosLength = response.length;
+                    if (todosLength === 0) {
+                        todosNum--;
+                    }
+                    return getListTodos(todosNum);
+                })
+                .then(function(_) {
+                    if (todosLength > 0) {
+                        return;
+                    } else {
+                        var ulTodo = document.getElementById("pageTodos");
+                        var liTodo = ulTodo.getElementsByClassName("numTodos");
+                        for (i = 0; i < liTodo.length; i++) {
+                            if (liTodo[i].classList.contains('active')) {
+                                liTodo[i].parentNode.removeChild(liTodo[i]);
+                                if (liTodo.length) {
+                                    liTodo[i - 1].classList.add("active");
+                                }
+                            }
+                        }
+                    }
+                })
+                .then(function(_) {
+                    // alert("Delete Success!")
+                })
+        });
 }
