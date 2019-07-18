@@ -12,7 +12,7 @@ var headTodosId = '';
 var todosId = '';
 var num = 1;
 var numberTodos = 1;
-var todosNum = '';
+var todosNum = 1;
 var currentNumPageUser = 1;
 var userLength = 0;
 var todosLength = 0;
@@ -54,6 +54,9 @@ function addPost() {
                         return showListUser(currentNumPageUser);
                     })
                     .then(function(_) {
+                        document.getElementById("createUserForm").reset();
+                    })
+                    .then(function(_) {
                         $('#createuserModal').modal('hide')
                         alert('Create Success!')
                     })
@@ -84,16 +87,6 @@ editPost = function(id) {
 
 // SAVE EDIT POST
 savePost = function() {
-
-    // var fEditName = document.forms["editUserForm"]["editName"].value;
-    // var fEditUsername = document.forms["editUserForm"]["editUsername"].value;
-    // var fEditEmail = document.forms["editUserForm"]["editEmail"].value;
-    // var fEditPhone = document.forms["editUserForm"]["editPhone"].value;
-    // var fEditWebsite = document.forms["editUserForm"]["editWebsite"].value;
-    // if (fEditName == "" || fEditUsername == "" || fEditEmail == "" || fEditPhone == "" || fEditWebsite == "") {
-    //     alert("All Field Must Be Filled!")
-    //     return false;
-    // } else {
     var editName = document.getElementById("editName").value;
     var editUsername = document.getElementById("editUsername").value;
     var editEmail = document.getElementById("editEmail").value;
@@ -120,40 +113,22 @@ savePost = function() {
             } else {
                 var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
-                callApi('users/' + defaultUserId, 'PUT', data)
-                    .then(function(response) {
-                        return showListUser(currentNumPageUser);
-                    })
+                return callApi('users/' + defaultUserId, 'PUT', data)
                     .then(function(_) {
                         alert("Edit Success");
                         $('#edituserModal').modal('hide')
+                    })
+                    .then(function(_) {
+                        return showListUser(currentNumPageUser);
                     });
             }
         });
-    // if (filterEdit.length === 0) {
-    //     var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
-
-    //     callApi('users/' + defaultUserId, 'PUT', data)
-    //         .then(function(response) {
-    //             return showListUser(currentNumPageUser);
-    //         })
-    //         .then(function(_) {
-    //             alert("Edit Success");
-    //         });
-    //     $('#edituserModal').modal('hide')
-    // } else {
-    //     alert("Username or Email exists!")
-    //     return false;
-    // }
-    // })
-    // }
 };
 
 //DELETE USERS
 deletePost = function(id) {
     callApi('users/' + id, 'DELETE')
         .then(function() {
-            console.log(maxNumPage);
             return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
                 .then(function(response) {
                     userLength = response.length;
@@ -191,68 +166,60 @@ deletePost = function(id) {
 // TODOS
 // CREATE TODOS
 
-createTodos = function() {
+function createTodos() {
 
-    var fUserID = document.forms["createTodosForm"]["userId"].value;
-    var fTitle = document.forms["createTodosForm"]["title"].value;
-    var fComplete = document.forms["createTodosForm"]["completed"].value;
-    if (fUserID == "" || fTitle == "" || fComplete == "") {
-        alert("All Field Must Be Filled!")
-        return false;
-    } else {
-        var userId = document.getElementById("userId").value;
-        var title = document.getElementById("title").value;
-        var radio = document.getElementsByName("completed");
-        for (i = 0; i < radio.length; i++) {
-            if (radio[i].checked) {
-                var completed = JSON.parse(radio[i].value);
-            }
+    var userId = document.getElementById("userId").value;
+    var title = document.getElementById("title").value;
+    var radio = document.getElementsByName("completed");
+    for (i = 0; i < radio.length; i++) {
+        if (radio[i].checked) {
+            var completed = JSON.parse(radio[i].value);
         }
-
-        // CODE FILTER TODOS
-
-        callApi('todos?userId=' + userId, 'GET')
-            .then(function(response) {
-                var filterTitle = _.filter(response, ['title', title]);
-                if (filterTitle.length === 0) {
-                    var data = {
-                        "userId": userId,
-                        "title": title,
-                        "completed": completed
-                    }
-
-                    callApi('todos', 'POST', data)
-                        .then(function(response) {
-                            return callApi('todos?userId=' + userId, 'GET')
-                                .then(function(response) {
-                                    defaultUserId = userId;
-                                    // console.log(response);
-                                    if ((response.length % 4) != 0) {
-                                        var numberTodos = (response.length / 4) + 1;
-                                    } else {
-                                        var numberTodos = response.length / 4;
-                                    }
-                                    return getListTodos(numberTodos);
-                                });
-                        })
-                        .then(function(response) {
-                            // getTodos(userId);
-                            document.getElementById("createTodosForm").reset();
-                        })
-                        .then(function(_) {
-                            // console.log(defaultUserId);
-                            return numPageTodos(defaultUserId);
-                        })
-                        .then(function() {
-                            alert("Create Todos Success");
-                        })
-                    $('#createtodoModal').modal('hide')
-                } else {
-                    alert("Title exists");
-                    return false;
-                }
-            })
     }
+
+    // CODE FILTER TODOS
+
+    callApi('todos?userId=' + userId, 'GET')
+        .then(function(response) {
+            var filterTitle = _.filter(response, ['title', title]);
+            if (filterTitle.length === 0) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+        .then(function(bool) {
+            if (bool === false) {
+                alert("Title Exists");
+                return false;
+            } else {
+                var data = {
+                    "userId": userId,
+                    "title": title,
+                    "completed": completed
+                }
+
+                callApi('todos', 'POST', data)
+                    .then(function(_) {
+                        return callApi('todos?userId=' + userId, 'GET')
+                            .then(function(response) {
+                                // debugger;
+                                defaultUserId = userId;
+                                todosNum = Math.ceil(response.length / 4);
+                                numPageTodos(defaultUserId);
+                                return getListTodos(todosNum);
+                            })
+                            .then(function(_) {
+                                alert("Create Todos Success");
+                                document.getElementById("createTodosForm").reset();
+                            })
+                            .then(function(_) {
+                                $('#createtodoModal').modal('hide')
+                            });
+                    })
+            }
+        })
+        // }
 }
 
 // CANCEL CREATE TODOS
@@ -280,47 +247,40 @@ editTodos = function(id) {
 
 saveTodos = function() {
 
-    var fEditTitle = document.forms["edittodoModal"]["editTitle"].value;
-    if (fEditTitle == "") {
-        alert("Title Must Be Filled");
-        return false;
-    } else {
-        var editUserId = document.getElementById("editUserId").value;
-        var editTitle = document.getElementById("editTitle").value;
-        var editRadio = document.getElementsByName("editCompleted");
-        for (i = 0; i < editRadio.length; i++) {
-            if (editRadio[i].checked) {
-                var editCompleted = editRadio[i].value
-            }
+    var editUserId = document.getElementById("editUserId").value;
+    var editTitle = document.getElementById("editTitle").value;
+    var editRadio = document.getElementsByName("editCompleted");
+    for (i = 0; i < editRadio.length; i++) {
+        if (editRadio[i].checked) {
+            var editCompleted = editRadio[i].value
         }
-
-        // CODE FILTER TODOS
-
-        callApi('todos?userId=' + editUserId, 'GET')
-            .then(function(response) {
-                _.remove(response, ['id', todosId])
-                var filterTitle = _.filter(response, ['title', editTitle]);
-                console.log(filterTitle);
-                if (filterTitle.length === 0) {
-                    var data = {
-                        "userId": editUserId,
-                        "title": editTitle,
-                        "completed": editCompleted
-                    }
-                    callApi('todos/' + todosId, 'PUT', data)
-                        .then(function(response) {
-                            return getListTodos(todosNum);
-                        })
-                        .then(function(response) {
-                            alert("Edit Success!")
-                        });
-                    $('#edittodoModal').modal('hide')
-                } else {
-                    alert("Title exists");
-                    return false;
-                }
-            })
     }
+
+    // CODE FILTER TODOS
+
+    callApi('todos?userId=' + editUserId, 'GET')
+        .then(function(response) {
+            _.remove(response, ['id', todosId])
+            var filterTitle = _.filter(response, ['title', editTitle]);
+            if (filterTitle.length === 0) {
+                var data = {
+                    "userId": editUserId,
+                    "title": editTitle,
+                    "completed": editCompleted
+                }
+                callApi('todos/' + todosId, 'PUT', data)
+                    .then(function(response) {
+                        return getListTodos(todosNum);
+                    })
+                    .then(function(response) {
+                        alert("Edit Success!")
+                    });
+                $('#edittodoModal').modal('hide')
+            } else {
+                alert("Title exists");
+                return false;
+            }
+        })
 }
 
 // DELETE TODOS

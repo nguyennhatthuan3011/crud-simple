@@ -18,8 +18,6 @@ var renderListPost = function(data, element) {
         var headIdUser = headUser.id;
         headUserId = headIdUser;
     }
-    // var a = _.filter(data, ['username', 'Kamren']);
-    // console.log(a);
     _.forEach(data, function(value) {
         template += '<tr>';
         template += '<td>' + value.id + '</td>';

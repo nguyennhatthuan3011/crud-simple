@@ -53,27 +53,27 @@
                                 <form action="" name="createUserForm" id="createUserForm">
                                     <div class="form-group">
                                         <label for="name">Name:</label>
-                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Name" oninput="hideErrName()">
                                         <p id="errName"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="username">Username:</label>
-                                        <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+                                        <input type="text" class="form-control" name="username" id="username" placeholder="Username" oninput="hideErrUsername">
                                         <p id="errUsername"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email:</label>
-                                        <input type="email" class="form-control" name="email" id="email" placeholder="email@gmail.com">
+                                        <input type="email" class="form-control" name="email" id="email" placeholder="email@gmail.com" oninput="hideErrEmail()">
                                         <p id="errEmail"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="phone">Phone:</label>
-                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="092826xxxx">
+                                        <input type="text" class="form-control" name="phone" id="phone" placeholder="092826xxxx" oninput="hideErrPhone()">
                                         <p id="errPhone"></p>
                                     </div>
                                     <div class="form-group">
                                         <label for="website">Website:</label>
-                                        <input type="text" class="form-control" name="website" id="website" placeholder="Your Website">
+                                        <input type="text" class="form-control" name="website" id="website" placeholder="Your Website" oninput="hideErrWebsite()">
                                         <p id="errWebsite"></p>
                                     </div>
                                     <div class="modal-footer">
@@ -91,7 +91,7 @@
                     <h3 class="titleList">Todos List User </h3>
                     <h3 class="titleList" id="titleTodosList"></h3>
                 </div>
-                <button type="button" class="btn btn-primary btn-xs pull-right create-user" data-toggle="modal" data-target="#createtodoModal">Create Todo</button>
+                <button type="button" class="btn btn-primary btn-xs pull-right create-user" onclick="passValueIdUser()" data-toggle="modal" data-target="#createtodoModal">Create Todo</button>
                 <div class="modal fade" id="createtodoModal" role="dialog">
                     <div class="modal-dialog">
 
@@ -105,11 +105,12 @@
                                 <form action="" name="createTodosForm" id="createTodosForm">
                                     <div class="form-group">
                                         <label for="userId">userId:</label>
-                                        <input type="text" name="userId" class="form-control" id="userId">
+                                        <input type="text" name="userId" class="form-control" id="userId" disabled>
                                     </div>
                                     <div class="form-group">
                                         <label for="title">Title:</label>
-                                        <input type="text" name="title" class="form-control" id="title">
+                                        <input type="text" name="title" class="form-control" id="title" oninput="hideErrTitle()">
+                                        <p id="errTitle"></p>
                                     </div>
                                     <div class="radio">
                                         <label for="Completed">Completed:</label><br>
@@ -117,13 +118,13 @@
                                             <label><input type="radio" name="completed" value="false">false</label>
                                             <label><input type="radio" name="completed" value="true">true</label>
                                         </div>
+                                        <p id="errCompleted"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="validateCreateTodos()">Create</button>
+                                        <button onclick="cancelAddTodos()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" onclick="createTodos()">Create</button>
-                                <button onclick="cancelAddTodos()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                             </div>
                         </div>
 
@@ -167,27 +168,27 @@
                                     <form action="" name="editUserForm">
                                         <div class="form-group">
                                             <label for="name">Name:</label>
-                                            <input type="text" name="editName" class="form-control" id="editName">
+                                            <input type="text" name="editName" class="form-control" id="editName" oninput="hideErrEditName()">
                                             <p id="errEditName"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="username">Username:</label>
-                                            <input type="text" name="editUsername" class="form-control" id="editUsername">
+                                            <input type="text" name="editUsername" class="form-control" id="editUsername" oninput="hideErrEditUserName()">
                                             <p id="errEditUsername"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Email:</label>
-                                            <input type="email" name="editEmail" class="form-control" id="editEmail">
+                                            <input type="email" name="editEmail" class="form-control" id="editEmail" oninput="hideErrEditEmail()">
                                             <p id="errEditEmail"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="phone">Phone:</label>
-                                            <input type="text" name="editPhone" class="form-control" id="editPhone">
+                                            <input type="text" name="editPhone" class="form-control" id="editPhone" oninput="hideErrEditPhone()">
                                             <p id="errEditPhone"></p>
                                         </div>
                                         <div class="form-group">
                                             <label for="website">Website:</label>
-                                            <input type="text" name="editWebsite" class="form-control" id="editWebsite">
+                                            <input type="text" name="editWebsite" class="form-control" id="editWebsite" oninput="hideErrEditWebsite()">
                                             <p id="errEditWebsite"></p>
                                         </div>
                                         <div class="modal-footer">
@@ -195,9 +196,7 @@
                                             <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                         </div>
                                     </form>
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -235,7 +234,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="title">Title:</label>
-                                            <input type="text" name="editTitle" class="form-control" id="editTitle">
+                                            <input type="text" name="editTitle" class="form-control" id="editTitle" oninput="hideErrEditTitle()">
+                                            <p id="errEditTitle"></p>
                                         </div>
                                         <div class="radio">
                                             <label for="Completed">Completed:</label><br>
@@ -247,14 +247,12 @@
                                             </div>
                                         </div>
                                     </form>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" type="button" onclick="saveTodos()">Edit</button>
-                                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" type="button" onclick="validateEditTodos()">Edit</button>
+                                        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

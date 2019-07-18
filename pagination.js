@@ -43,7 +43,6 @@ function numPage() {
         })
         .then(function() {
             setHighLight();
-
             var userPages = document.getElementsByClassName("numUser");
             _.each(userPages, function(page) {
                 page.addEventListener('click', onUserClickPage, false);
@@ -79,6 +78,15 @@ function clickHightLight(currentPage) {
     }
 }
 
+function afterDeleteHight(currentPage) {
+    var ulUser = document.getElementById("pageUser");
+    var liUser = ulUser.getElementsByClassName("numUser");
+    for (i = 0; i < liUser.length; i++) {
+        if (parseInt(liUser[i].getAttribute("data-id")) === currentPage) {
+            liUser[i].classList.add("active");
+        }
+    }
+}
 
 // PREVIOUS PAGE USERS
 function previousPageUser() {
@@ -138,6 +146,9 @@ function numPageTodos(numPageTodos) {
             _.each(todosPage, function(todosPage) {
                 todosPage.addEventListener('click', onTodosClick, false)
             })
+        })
+        .then(function() {
+            return clickHightLightTodo(todosNum);
         });
 }
 
