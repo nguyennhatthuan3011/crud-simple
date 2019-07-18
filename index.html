@@ -39,7 +39,7 @@
                 <div>
                     <h3 class="titleList">Users List</h3>
                 </div>
-                <button type="button" class="btn btn-primary btn-xs pull-right create-user" data-toggle="modal" data-target="#createuserModal">Create User</button>
+                <button type="button" onclick="showTitleUser()" class="btn btn-primary btn-xs pull-right create-user" data-toggle="modal" data-target="#createuserModal">Create User</button>
                 <div class="modal fade" id="createuserModal" role="dialog">
                     <div class="modal-dialog">
 
@@ -47,7 +47,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Create User</h4>
+                                <h4 class="modal-title" id="titleUser"></h4>
                             </div>
                             <div class="modal-body">
                                 <form action="" name="createUserForm" id="createUserForm">
@@ -77,7 +77,8 @@
                                         <p id="errWebsite"></p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-primary" type="button" onclick="validateCreateUser()">Create</button>
+                                        <button class="btn btn-primary" id="btnCreateUser" type="button" onclick="validateCreateUser()">Create</button>
+                                        <button class="btn btn-primary" id="btnEditUser" type="button" onclick="validateEditUser()">Edit</button>
                                         <button onclick="cancelAdd()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
@@ -99,7 +100,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Create Todos</h4>
+                                <h4 class="modal-title" id="titleTodos"></h4>
                             </div>
                             <div class="modal-body">
                                 <form action="" name="createTodosForm" id="createTodosForm">
@@ -121,7 +122,8 @@
                                         <p id="errCompleted"></p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" onclick="validateCreateTodos()">Create</button>
+                                        <button type="button" id="btnCreateTodos" class="btn btn-primary" onclick="validateCreateTodos()">Create</button>
+                                        <button type="button" id="btnEditTodos" class="btn btn-primary" type="button" onclick="validateEditTodos()">Edit</button>
                                         <button onclick="cancelAddTodos()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                     </div>
                                 </form>
@@ -151,55 +153,6 @@
 
                         </tbody>
                     </table>
-                    <!-- modal edit -->
-
-
-                    <div class="modal fade" id="edituserModal" role="dialog">
-                        <div class="modal-dialog">
-
-                            <!-- MODAL EDIT USER -->
-
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Edit User</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="" name="editUserForm">
-                                        <div class="form-group">
-                                            <label for="name">Name:</label>
-                                            <input type="text" name="editName" class="form-control" id="editName" oninput="hideErrEditName()">
-                                            <p id="errEditName"></p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="username">Username:</label>
-                                            <input type="text" name="editUsername" class="form-control" id="editUsername" oninput="hideErrEditUserName()">
-                                            <p id="errEditUsername"></p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Email:</label>
-                                            <input type="email" name="editEmail" class="form-control" id="editEmail" oninput="hideErrEditEmail()">
-                                            <p id="errEditEmail"></p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="phone">Phone:</label>
-                                            <input type="text" name="editPhone" class="form-control" id="editPhone" oninput="hideErrEditPhone()">
-                                            <p id="errEditPhone"></p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="website">Website:</label>
-                                            <input type="text" name="editWebsite" class="form-control" id="editWebsite" oninput="hideErrEditWebsite()">
-                                            <p id="errEditWebsite"></p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button onclick="validateEditUser()" type="button" class="btn btn-primary">Edit</button>
-                                            <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -218,42 +171,6 @@
                         </tbody>
                     </table>
                     <div class="modal fade" id="edittodoModal" role="dialog">
-                        <div class="modal-dialog">
-
-                            <!-- MODAL EIDT TODOS -->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Eidt Todos</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="" name="edittodoModal" id="edittodoModal">
-                                        <div class="form-group">
-                                            <label for="userId">userId:</label>
-                                            <input type="text" name="editUserId" class="form-control" id="editUserId" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="title">Title:</label>
-                                            <input type="text" name="editTitle" class="form-control" id="editTitle" oninput="hideErrEditTitle()">
-                                            <p id="errEditTitle"></p>
-                                        </div>
-                                        <div class="radio">
-                                            <label for="Completed">Completed:</label><br>
-                                            <div class="radio">
-                                                <label><input type="radio" name="editCompleted"
-                                                        value="false">false</label>
-                                                <label><input type="radio" name="editCompleted"
-                                                        value="true">true</label>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" type="button" onclick="validateEditTodos()">Edit</button>
-                                        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

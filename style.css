@@ -64,3 +64,11 @@ input[type=text] {
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+.createUser {
+    display: none;
+}
+
+.editUser {
+    display: none;
+}

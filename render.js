@@ -26,7 +26,7 @@ var renderListPost = function(data, element) {
         template += '<td>' + value.email + '</td>';
         template += '<td>' + value.phone + '</td>';
         template += '<td>' + value.website + '</td>';
-        template += '<td class="colEdit"><button class="btn btn-warning" onclick="editPost(' + value.id + ')" data-toggle="modal" data-target="#edituserModal">Edit</button></td>';
+        template += '<td class="colEdit"><button class="btn btn-warning" onclick="editPost(' + value.id + ')" data-toggle="modal" data-target="#createuserModal">Edit</button></td>';
         template += `<td class="colDel"><button class="btn btn-danger" onclick="deletePost('${value.id}')">Delete</button></td>`;
         template += '<td class="colEdit"><button class="btn btn-success" onclick="getTodos(' + value.id + ')">Detail</button></td>';
         template += '</tr>';
@@ -47,7 +47,7 @@ var renderListTodos = function(data, element) {
         template += '<tr>';
         template += '<td>' + value.title + '</td>';
         template += '<td>' + value.completed + '</td>';
-        template += '<td class="colEdit"><button class="btn btn-warning" onclick="editTodos(' + value.id + ')" data-toggle="modal" data-target="#edittodoModal">Edit</button></td>';
+        template += '<td class="colEdit"><button class="btn btn-warning" onclick="editTodos(' + value.id + ')" data-toggle="modal" data-target="#createtodoModal">Edit</button></td>';
         template += `<td class="colDel"><button class="btn btn-danger" onclick="deleteTodos('${value.id}')">Delete</button></td>`;
         template += '</tr>';
     });

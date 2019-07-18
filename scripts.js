@@ -23,6 +23,13 @@ function initApplication() {
     showListUser(currentNumPageUser);
 }
 
+
+function showTitleUser() {
+    document.getElementById("titleUser").innerHTML = 'Create User';
+    document.getElementById("btnEditUser").style.display = 'none';
+    document.getElementById("btnCreateUser").style.display = 'inline-block';
+}
+
 // CREATE USER
 function addPost() {
     var name = document.getElementById("name").value;
@@ -58,7 +65,7 @@ function addPost() {
                     })
                     .then(function(_) {
                         $('#createuserModal').modal('hide')
-                        alert('Create Success!')
+                        alert('Create Success!');
                     })
             }
         })
@@ -73,25 +80,28 @@ cancelAdd = function() {
 
 //EDIT USERS
 editPost = function(id) {
+    document.getElementById("titleUser").innerHTML = 'Edit User';
+    document.getElementById("btnCreateUser").style.display = 'none';
+    document.getElementById("btnEditUser").style.display = 'inline-block';
     // Code of function edit post
     callApi('users/' + id, 'GET')
         .then(function(response) {
             defaultUserId = response.id;
-            document.getElementById("editName").value = response.name;
-            document.getElementById("editUsername").value = response.username;
-            document.getElementById("editEmail").value = response.email;
-            document.getElementById("editPhone").value = response.phone;
-            document.getElementById("editWebsite").value = response.website;
+            document.getElementById("name").value = response.name;
+            document.getElementById("username").value = response.username;
+            document.getElementById("email").value = response.email;
+            document.getElementById("phone").value = response.phone;
+            document.getElementById("website").value = response.website;
         });
 }
 
 // SAVE EDIT POST
 savePost = function() {
-    var editName = document.getElementById("editName").value;
-    var editUsername = document.getElementById("editUsername").value;
-    var editEmail = document.getElementById("editEmail").value;
-    var editPhone = document.getElementById("editPhone").value;
-    var editWebsite = document.getElementById("editWebsite").value;
+    var editName = document.getElementById("name").value;
+    var editUsername = document.getElementById("username").value;
+    var editEmail = document.getElementById("email").value;
+    var editPhone = document.getElementById("phone").value;
+    var editWebsite = document.getElementById("website").value;
 
     // FILTER USERNAME AND EMAIL
 
@@ -115,8 +125,9 @@ savePost = function() {
 
                 return callApi('users/' + defaultUserId, 'PUT', data)
                     .then(function(_) {
+                        debugger;
                         alert("Edit Success");
-                        $('#edituserModal').modal('hide')
+                        $('#createuserModal').modal('hide');
                     })
                     .then(function(_) {
                         return showListUser(currentNumPageUser);
@@ -219,7 +230,6 @@ function createTodos() {
                     })
             }
         })
-        // }
 }
 
 // CANCEL CREATE TODOS
@@ -232,11 +242,14 @@ cancelAddTodos = function() {
 
 editTodos = function(id) {
     todosId = id;
+    document.getElementById("titleTodos").innerHTML = 'Edit Todo';
+    document.getElementById("btnCreateTodos").style.display = 'none';
+    document.getElementById("btnEditTodos").style.display = 'inline-block';
     callApi('todos/' + id, 'GET')
         .then(function(response) {
-            document.getElementById("editUserId").value = response.userId;
-            document.getElementById("editTitle").value = response.title;
-            var editRadio = document.getElementsByName("editCompleted");
+            document.getElementById("userId").value = response.userId;
+            document.getElementById("title").value = response.title;
+            var editRadio = document.getElementsByName("completed");
             for (let i = 0; i < editRadio.length; i++) {
                 if (JSON.parse(editRadio[i].value) === response.completed) {
                     editRadio[i].checked = true;
@@ -247,9 +260,9 @@ editTodos = function(id) {
 
 saveTodos = function() {
 
-    var editUserId = document.getElementById("editUserId").value;
-    var editTitle = document.getElementById("editTitle").value;
-    var editRadio = document.getElementsByName("editCompleted");
+    var editUserId = document.getElementById("userId").value;
+    var editTitle = document.getElementById("title").value;
+    var editRadio = document.getElementsByName("completed");
     for (i = 0; i < editRadio.length; i++) {
         if (editRadio[i].checked) {
             var editCompleted = editRadio[i].value
@@ -275,7 +288,7 @@ saveTodos = function() {
                     .then(function(response) {
                         alert("Edit Success!")
                     });
-                $('#edittodoModal').modal('hide')
+                $('#createtodoModal').modal('hide')
             } else {
                 alert("Title exists");
                 return false;
