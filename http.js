@@ -19,9 +19,6 @@ var callApi = function(prefixUrl, method, data) {
 
     var response = fetch(url, settings)
         .then(function(response) {
-            if (response.length === 0) {
-                return;
-            }
             return response.json();
         })
         .catch(function(err) {
