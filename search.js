@@ -16,5 +16,6 @@ searchPost = function() {
 
 resetPost = function() {
     document.getElementById("pageUser").style.display = 'block';
-    return showListUser(currentNumPageUser);
+    afterActionNumPage(1);
+    return showListUser(1);
 }
