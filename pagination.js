@@ -90,12 +90,11 @@ function afterDeleteHight(currentPage) {
 
 // PREVIOUS PAGE USERS
 function previousPageUser() {
-    if (currentNumPageUser === 1) {
+    // debugger;
+    if (currentNumPageUser <= 1) {
         return;
     } else {
-
-        currentNumPageUser = currentNumPageUser - 1;
-
+        currentNumPageUser--;
         clickHightLight(currentNumPageUser);
         return showListUser(currentNumPageUser);
     }
@@ -206,7 +205,7 @@ function clickHightLightTodo(currentPage) {
 
 // PREVIOUS PAGE USERS
 function previousPageTodos() {
-    if (todosNum === 1) {
+    if (todosNum <= 1) {
         return;
     } else {
         todosNum--;
