@@ -7,28 +7,38 @@ function validateCreateUser() {
     var fPhone = document.forms["createUserForm"]["phone"].value;
     var fWebsite = document.forms["createUserForm"]["website"].value;
 
-    if (fName == "") {
-        document.getElementById("errName").innerHTML = 'Name must be filled!';
-        return false;
-    }
-    if (fUsername == "") {
-        document.getElementById("errUsername").innerHTML = 'Username must be filled!';
-        return false;
-    }
-    if (fEmail == "") {
-        document.getElementById("errEmail").innerHTML = 'Email must be filled!';
-        return false;
-    }
-    if (fPhone == "") {
-        document.getElementById("errPhone").innerHTML = 'Phone must be filled!';
-        return false;
-    }
-    if (fWebsite == "") {
-        document.getElementById("errWebsite").innerHTML = 'Website must be filled!';
-        return false;
+    // var formControls = [{
+    //         name: 'name',
+    //         errors: [],
+    //     },
+    //     {
+    //         name: 'email',
+    //         errors: []
+    //     }
+    // ];
+
+    // for (let control of formControls) {
+    //     const value = document.forms["createUserForm"][control.name].value
+    //     if (!value) {
+    //         control.errors.push(control.name + 'is required');
+    //         return false;
+    //     }
+    // }
+
+
+    var id = ['errName', 'errUsername', 'errEmail', 'errPhone', 'errWebsite'];
+    const a = [fName, fUsername, fEmail, fPhone, fWebsite];
+    var err = ['Name', 'Username', 'Email', 'Phone', 'Website'];
+    var check = 0;
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === "") {
+            // err.push(a[i]);
+            document.getElementById(id[i]).innerHTML = err[i] + ' must be filled!';
+            check = 1;
+        }
     }
 
-    return addPost();
+    return (check == 1) ? false : addPost();
 }
 
 

@@ -9,16 +9,16 @@ var renderListPost = function(data, element) {
 
     // console.log(headIdUser.id);
 
-    if (data.length === 0) {
+    if (data.data.length === 0) {
         template += '<tr>';
         template += '<td colspan="7">' + ' Not Found User ' + '</td>';
         template += '</tr>'
     } else {
-        var headUser = _.head(data);
+        var headUser = _.head(data.data);
         var headIdUser = headUser.id;
         headUserId = headIdUser;
     }
-    _.forEach(data, function(value) {
+    _.forEach(data.data, function(value) {
         template += '<tr>';
         template += '<td>' + value.id + '</td>';
         template += '<td>' + value.name + '</td>';
@@ -37,16 +37,16 @@ var renderListPost = function(data, element) {
 var renderListTodos = function(data, element) {
     "use strict"
     var template = "";
-    if (data.length === 0) {
+    if (data.data.length === 0) {
         template += '<tr>';
         template += '<td colspan="4">' + ' Not Found Data ' + '</td>';
         template += '</tr>'
     }
 
-    _.forEach(data, function(value) {
+    _.forEach(data.data, function(value) {
         template += '<tr>';
         template += '<td>' + value.title + '</td>';
-        template += '<td>' + value.completed + '</td>';
+        template += '<td>' + value.complete + '</td>';
         template += '<td class="colEdit"><button class="btn btn-warning" onclick="editTodos(' + value.id + ')" data-toggle="modal" data-target="#createtodoModal">Edit</button></td>';
         template += `<td class="colDel"><button class="btn btn-danger" onclick="deleteTodos('${value.id}')">Delete</button></td>`;
         template += '</tr>';
@@ -58,13 +58,13 @@ var renderListTodos = function(data, element) {
 var renderNumPage = function(data, element) {
     "use strict"
     var template = "";
-    if (data.length === 0) {
+    if (data.data.length === 0) {
         template = "";
     }
 
     var numPage;
 
-    numPage = Math.ceil(data.length / 5)
+    numPage = Math.ceil(data.data.length / 5)
 
     maxNumPage = numPage;
     template += '<li class="previous" onclick="previousPageUser()"><a href="#">Previous</a></li>'
@@ -85,12 +85,12 @@ var renderNumPage = function(data, element) {
 var renderNumPageTodos = function(data, element) {
     "use strict"
     var template = "";
-    if (data.length === 0) {
+    if (data.data.length === 0) {
         template = "";
     }
 
     var numPage;
-    numPage = Math.ceil(data.length / 4);
+    numPage = Math.ceil(data.data.length / 4);
 
     maxNumPageTodo = numPage;
 

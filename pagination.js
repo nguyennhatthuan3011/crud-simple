@@ -12,7 +12,7 @@ function setHighLight() {
 // SHOW LIST USERPAGE
 function showListUser(attr) {
     const $el = document.getElementById("posts");
-    return callApi('users' + '?_page=' + attr + '&_limit=' + 5, 'GET')
+    return callApi('users' + '?page=' + attr + '&perPage=' + 5, 'GET')
         .then(function(response) {
             return renderListPost(response, $el);
         });
@@ -122,8 +122,9 @@ function getTodos(id) {
     defaultUserId = id
     todosNum = 1;
     const $el = document.getElementById("todos");
-    callApi('todos' + '?userId=' + id + '&_page=' + 1 + '&_limit=' + 4, 'GET')
+    callApi('todo/' + id + '?page=' + 1 + '&perPage=' + 4, 'GET')
         .then(function(response) {
+            // debugger;
             return renderListTodos(response, $el)
         })
         .then(function(_) {
@@ -136,7 +137,7 @@ function getTodos(id) {
 // GET NUMPAGE TODOS
 function numPageTodos(numPageTodos) {
     const $el = document.getElementById("pageTodos")
-    return callApi('todos?userId=' + numPageTodos, 'GET')
+    return callApi('todo/' + numPageTodos, 'GET')
         .then(function(response) {
             renderNumPageTodos(response, $el);
         })
@@ -180,7 +181,7 @@ function getListTodos(numTodos) {
     todosNum = numTodos;
     // console.log(defaultUserId);
     const $el = document.getElementById("todos");
-    return callApi('todos' + '?userId=' + defaultUserId + '&_page=' + numTodos + '&_limit=' + 4, 'GET')
+    return callApi('todo/' + defaultUserId + '?page=' + numTodos + '&perPage=' + 4, 'GET')
         .then(function(response) {
             // console.log(response);
             return renderListTodos(response, $el)

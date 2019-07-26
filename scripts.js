@@ -40,7 +40,7 @@ function addPost() {
 
     return callApi('users', 'GET')
         .then(function(response) {
-            var filterCreate = _.filter(response, function(object) {
+            var filterCreate = _.filter(response.data, function(object) {
                 return object.username === username || object.email === email;
             });
             if (filterCreate.length > 0) {
@@ -54,9 +54,10 @@ function addPost() {
                 alert('Username or Email has been exist')
             } else {
                 data = { "name": name, "username": username, "email": email, "phone": phone, "website": website }
-                callApi('users', 'POST', data)
+                callApi('user', 'POST', data)
                     .then(function(response) {
-                        currentNumPageUser = Math.ceil(response.id / 5);
+                        debugger;
+                        currentNumPageUser = Math.ceil(response.data.id / 5);
                         afterActionNumPage(currentNumPageUser);
                         return showListUser(currentNumPageUser);
                     })
@@ -84,14 +85,14 @@ editPost = function(id) {
     document.getElementById("btnCreateUser").style.display = 'none';
     document.getElementById("btnEditUser").style.display = 'inline-block';
     // Code of function edit post
-    callApi('users/' + id, 'GET')
+    callApi('user/' + id, 'GET')
         .then(function(response) {
-            defaultUserId = response.id;
-            document.getElementById("name").value = response.name;
-            document.getElementById("username").value = response.username;
-            document.getElementById("email").value = response.email;
-            document.getElementById("phone").value = response.phone;
-            document.getElementById("website").value = response.website;
+            defaultUserId = response.data.id;
+            document.getElementById("name").value = response.data.name;
+            document.getElementById("username").value = response.data.username;
+            document.getElementById("email").value = response.data.email;
+            document.getElementById("phone").value = response.data.phone;
+            document.getElementById("website").value = response.data.website;
         });
 }
 
@@ -107,8 +108,8 @@ savePost = function() {
 
     return callApi('users', 'GET')
         .then(function(response) {
-            _.remove(response, ['id', defaultUserId]);
-            var filterEdit = _.filter(response, function(object) {
+            _.remove(response.data, ['id', defaultUserId]);
+            var filterEdit = _.filter(response.data, function(object) {
                 return object.username === editUsername || object.email === editEmail;
             });
             if (filterEdit.length === 0) {
@@ -123,9 +124,8 @@ savePost = function() {
             } else {
                 var data = { "name": editName, "username": editUsername, "email": editEmail, "phone": editPhone, "website": editWebsite };
 
-                return callApi('users/' + defaultUserId, 'PUT', data)
+                return callApi('user/' + defaultUserId, 'PUT', data)
                     .then(function(_) {
-                        debugger;
                         alert("Edit Success");
                         $('#createuserModal').modal('hide');
                     })
@@ -138,11 +138,11 @@ savePost = function() {
 
 //DELETE USERS
 deletePost = function(id) {
-    callApi('users/' + id, 'DELETE')
+    callApi('user/' + id, 'DELETE')
         .then(function() {
-            return callApi('users' + '?_page=' + currentNumPageUser + '&_limit=' + 5, 'GET')
+            return callApi('users' + '?page=' + currentNumPageUser + '&perPage=' + 5, 'GET')
                 .then(function(response) {
-                    userLength = response.length;
+                    userLength = response.data.length;
                     if (userLength === 0) {
                         currentNumPageUser--;
                     }
@@ -190,9 +190,9 @@ function createTodos() {
 
     // CODE FILTER TODOS
 
-    callApi('todos?userId=' + userId, 'GET')
+    callApi('todo/' + userId, 'GET')
         .then(function(response) {
-            var filterTitle = _.filter(response, ['title', title]);
+            var filterTitle = _.filter(response.data, ['title', title]);
             if (filterTitle.length === 0) {
                 return true;
             } else {
@@ -205,24 +205,23 @@ function createTodos() {
                 return false;
             } else {
                 var data = {
-                    "userId": userId,
+                    "user_id": userId,
                     "title": title,
-                    "completed": completed
+                    "complete": completed
                 }
 
-                callApi('todos', 'POST', data)
+                callApi('todo', 'POST', data)
                     .then(function(_) {
-                        return callApi('todos?userId=' + userId, 'GET')
+                        return callApi('todo/' + userId, 'GET')
                             .then(function(response) {
-                                // debugger;
                                 defaultUserId = userId;
-                                todosNum = Math.ceil(response.length / 4);
+                                todosNum = Math.ceil(response.data.length / 4);
                                 numPageTodos(defaultUserId);
-                                return getListTodos(todosNum);
+                                alert("Create Todos Success");
                             })
                             .then(function(_) {
-                                alert("Create Todos Success");
                                 document.getElementById("createTodosForm").reset();
+                                return getListTodos(todosNum);
                             })
                             .then(function(_) {
                                 $('#createtodoModal').modal('hide')
@@ -247,11 +246,11 @@ editTodos = function(id) {
     document.getElementById("btnEditTodos").style.display = 'inline-block';
     callApi('todos/' + id, 'GET')
         .then(function(response) {
-            document.getElementById("userId").value = response.userId;
-            document.getElementById("title").value = response.title;
+            document.getElementById("userId").value = response.data.user_id;
+            document.getElementById("title").value = response.data.title;
             var editRadio = document.getElementsByName("completed");
             for (let i = 0; i < editRadio.length; i++) {
-                if (JSON.parse(editRadio[i].value) === response.completed) {
+                if (JSON.parse(editRadio[i].value) === response.data.complete) {
                     editRadio[i].checked = true;
                 }
             }
@@ -265,23 +264,23 @@ saveTodos = function() {
     var editRadio = document.getElementsByName("completed");
     for (i = 0; i < editRadio.length; i++) {
         if (editRadio[i].checked) {
-            var editCompleted = editRadio[i].value
+            var editCompleted = JSON.parse(editRadio[i].value);
         }
     }
 
     // CODE FILTER TODOS
 
-    callApi('todos?userId=' + editUserId, 'GET')
+    callApi('todo/' + editUserId, 'GET')
         .then(function(response) {
-            _.remove(response, ['id', todosId])
-            var filterTitle = _.filter(response, ['title', editTitle]);
+            debugger;
+            _.remove(response.data, ['id', todosId])
+            var filterTitle = _.filter(response.data, ['title', editTitle]);
             if (filterTitle.length === 0) {
                 var data = {
-                    "userId": editUserId,
                     "title": editTitle,
-                    "completed": editCompleted
+                    "complete": editCompleted
                 }
-                callApi('todos/' + todosId, 'PUT', data)
+                callApi('todo/' + todosId, 'PUT', data)
                     .then(function(response) {
                         return getListTodos(todosNum);
                     })
@@ -301,11 +300,11 @@ saveTodos = function() {
 deleteTodos = function(id) {
 
     // Code of function delete todos
-    callApi('todos/' + id, 'DELETE')
+    callApi('todo/' + id, 'DELETE')
         .then(function() {
-            return callApi('todos' + '?userId=' + defaultUserId + '&_page=' + todosNum + '&_limit=' + 4, 'GET')
+            return callApi('todo/' + defaultUserId + '?page=' + todosNum + '&perPage=' + 4, 'GET')
                 .then(function(response) {
-                    todosLength = response.length;
+                    todosLength = response.data.length;
                     if (todosLength === 0) {
                         todosNum--;
                     }
