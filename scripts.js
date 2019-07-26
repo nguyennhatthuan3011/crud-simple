@@ -272,7 +272,6 @@ saveTodos = function() {
 
     callApi('todo/' + editUserId, 'GET')
         .then(function(response) {
-            debugger;
             _.remove(response.data, ['id', todosId])
             var filterTitle = _.filter(response.data, ['title', editTitle]);
             if (filterTitle.length === 0) {
