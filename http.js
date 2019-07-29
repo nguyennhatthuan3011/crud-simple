@@ -1,14 +1,14 @@
 var callApi = function(prefixUrl, method, data) {
 
-    var baseUrl = 'http://localhost:3000';
+    // var baseUrl = 'http://127.0.0.1:8000/api/v1';
+    // var baseUrl = 'http://localhost:3000';
+    var baseUrl = 'http://learnlaravel.local/api/v1'
 
     var settings = {
-        async: true,
-        crossDomain: true,
         method: method,
         headers: {
-            "Content-Type": "application/json",
-        }
+            'Content-Type': 'application/json'
+        },
     };
 
     if (data) {

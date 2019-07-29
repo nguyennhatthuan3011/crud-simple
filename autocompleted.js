@@ -80,8 +80,8 @@ var arr = [];
 callApi('users', 'GET')
     .then(function(response) {
         if (response) {
-            for (i = 0; i < response.length; i++) {
-                arr.push(response[i].name)
+            for (i = 0; i < response.data.length; i++) {
+                arr.push(response.data[i].name)
             }
         }
     })
